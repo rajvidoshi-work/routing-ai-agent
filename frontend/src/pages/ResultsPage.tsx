@@ -168,25 +168,6 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
     margin: '0 24px 16px 24px'
   };
 
-  const agentFormsStyle: React.CSSProperties = {
-    backgroundColor: 'white',
-    borderRadius: '12px',
-    border: '1px solid #fbbf24',
-    overflow: 'hidden',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
-  };
-
-  const agentFormsHeaderStyle: React.CSSProperties = {
-    background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-    color: 'white',
-    padding: '20px 24px',
-    fontSize: '20px',
-    fontWeight: '600',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px'
-  };
-
   const labelStyle: React.CSSProperties = {
     display: 'block',
     marginBottom: '8px',
@@ -540,8 +521,13 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
                     <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid #e5e7eb' }}>
                       <button
                         onClick={() => {
-                          // Handle create DME order form functionality
-                          alert('Create DME Order Form functionality - Coming Soon!\n\nThis will generate a DME order form based on the equipment recommendations.');
+                          // Navigate to dedicated DME order form page
+                          navigate('/dme-order', {
+                            state: {
+                              results: results,
+                              patientData: location.state?.patientData
+                            }
+                          });
                         }}
                         style={{
                           background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
@@ -578,8 +564,13 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
                     <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid #e5e7eb' }}>
                       <button
                         onClick={() => {
-                          // Handle create pharmacy order form functionality
-                          alert('Create Pharmacy Order Form functionality - Coming Soon!\n\nThis will generate a medication order form based on the pharmacy recommendations.');
+                          // Navigate to dedicated pharmacy order form page
+                          navigate('/pharmacy-order', {
+                            state: {
+                              results: results,
+                              patientData: location.state?.patientData
+                            }
+                          });
                         }}
                         style={{
                           background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
@@ -616,8 +607,13 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
                     <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid #e5e7eb' }}>
                       <button
                         onClick={() => {
-                          // Handle create state order form functionality
-                          alert('Create State Authorization Form functionality - Coming Soon!\n\nThis will generate an insurance/state authorization form based on the coverage recommendations.');
+                          // Navigate to dedicated state authorization form page
+                          navigate('/state-authorization', {
+                            state: {
+                              results: results,
+                              patientData: location.state?.patientData
+                            }
+                          });
                         }}
                         style={{
                           background: 'linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)',
@@ -654,299 +650,12 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
           )}
         </div>
 
-        {/* Downstream Agent Forms */}
-        {results.routing_decision && results.routing_decision.recommended_agents && (
-          <div style={agentFormsStyle}>
-            <div style={agentFormsHeaderStyle}>
-              <span style={{ fontSize: '24px' }}>📝</span>
-              Downstream Agent Forms
-            </div>
-            <div style={{ padding: '24px', color: '#92400e', fontSize: '14px', lineHeight: '1.5' }}>
-              Complete the forms below for each recommended agent to get specific recommendations:
-            </div>
-
-            {results.routing_decision.recommended_agents
-              .filter((agentType: string) => agentType !== 'nursing') // Exclude nursing agent
-              .map((agentType: string) => (
-              <div key={agentType} style={{
-                backgroundColor: '#ffffff',
-                padding: '24px',
-                margin: '24px',
-                borderRadius: '10px',
-                border: '1px solid #e5e7eb',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
-              }}>
-                <h3 style={{ 
-                  color: '#2563eb', 
-                  marginBottom: '20px',
-                  fontSize: '18px',
-                  fontWeight: '600',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px'
-                }}>
-                  <span style={{ fontSize: '24px' }}>
-                    {agentType === 'nursing' ? '👩‍⚕️' :
-                     agentType === 'dme' ? '🏥' :
-                     agentType === 'pharmacy' ? '💊' :
-                     agentType === 'state' ? '📋' : '🤖'}
-                  </span>
-                  {agentType === 'dme' ? 'DME (Durable Medical Equipment)' : 
-                   agentType === 'state' ? 'Insurance & State Programs' : 
-                   agentType.charAt(0).toUpperCase() + agentType.slice(1)} Agent
-                </h3>
-
-                {!agentForms[agentType]?.submitted ? (
-                  <form onSubmit={(e) => {
-                    e.preventDefault();
-                    handleAgentFormSubmit(agentType, agentForms[agentType] || {});
-                  }}>
-                    <div style={{ marginBottom: '20px' }}>
-                      <label style={labelStyle}>
-                        Specific Concern for {agentType.toUpperCase()} *
-                      </label>
-                      <textarea
-                        value={agentForms[agentType]?.concern || ''}
-                        onChange={(e) => updateAgentForm(agentType, 'concern', e.target.value)}
-                        required
-                        rows={3}
-                        placeholder={`Describe specific ${agentType} requirements...`}
-                        style={{
-                          ...inputStyle,
-                          minHeight: '90px'
-                        }}
-                      />
-                    </div>
-
-                    <div style={{ marginBottom: '20px' }}>
-                      <label style={labelStyle}>
-                        Additional Notes
-                      </label>
-                      <textarea
-                        value={agentForms[agentType]?.notes || ''}
-                        onChange={(e) => updateAgentForm(agentType, 'notes', e.target.value)}
-                        rows={2}
-                        placeholder={`Any additional information for ${agentType} agent...`}
-                        style={{
-                          ...inputStyle,
-                          minHeight: '60px'
-                        }}
-                      />
-                    </div>
-
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      style={{
-                        background: loading ? 
-                          'linear-gradient(135deg, #9ca3af 0%, #6b7280 100%)' : 
-                          'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
-                        color: 'white',
-                        padding: '12px 24px',
-                        border: 'none',
-                        borderRadius: '8px',
-                        fontSize: '14px',
-                        cursor: loading ? 'not-allowed' : 'pointer',
-                        fontWeight: '600',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        boxShadow: loading ? 'none' : '0 4px 12px rgba(37, 99, 235, 0.3)'
-                      }}
-                    >
-                      {loading ? (
-                        <>
-                          <div style={{
-                            width: '16px',
-                            height: '16px',
-                            border: '2px solid #ffffff',
-                            borderTop: '2px solid transparent',
-                            borderRadius: '50%',
-                            animation: 'spin 1s linear infinite'
-                          }}></div>
-                          Processing...
-                        </>
-                      ) : (
-                        <>
-                          <span>🚀</span>
-                          Process {agentType.toUpperCase()} Agent
-                        </>
-                      )}
-                    </button>
-                  </form>
-                ) : (
-                  <div>
-                    <div style={{
-                      backgroundColor: '#ecfdf5',
-                      color: '#065f46',
-                      padding: '16px 20px',
-                      borderRadius: '8px',
-                      marginBottom: '20px',
-                      border: '1px solid #a7f3d0',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      fontSize: '14px',
-                      fontWeight: '500'
-                    }}>
-                      <span>✅</span>
-                      {agentType.toUpperCase()} agent processed successfully!
-                    </div>
-
-                    {/* Display agent-specific results */}
-                    {agentForms[agentType]?.result && (
-                      <div style={{
-                        backgroundColor: '#f8fafc',
-                        padding: '20px',
-                        borderRadius: '8px',
-                        border: '1px solid #e2e8f0'
-                      }}>
-                        <h4 style={{ 
-                          color: '#059669', 
-                          marginBottom: '16px',
-                          fontSize: '16px',
-                          fontWeight: '600',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '8px'
-                        }}>
-                          <span>📋</span>
-                          {agentType.toUpperCase()} Recommendations
-                        </h4>
-                        
-                        {agentForms[agentType].result.recommendations && (
-                          <div style={{ marginBottom: '16px' }}>
-                            <div style={{ 
-                              fontSize: '14px', 
-                              fontWeight: '600', 
-                              color: '#374151',
-                              marginBottom: '8px'
-                            }}>
-                              Recommendations:
-                            </div>
-                            <ul style={{ margin: 0, paddingLeft: '20px', listStyle: 'none' }}>
-                              {agentForms[agentType].result.recommendations.map((rec: string, i: number) => (
-                                <li key={i} style={{ 
-                                  marginBottom: '6px',
-                                  fontSize: '14px',
-                                  lineHeight: '1.5',
-                                  color: '#4b5563',
-                                  position: 'relative',
-                                  paddingLeft: '16px'
-                                }}>
-                                  <span style={{ 
-                                    position: 'absolute', 
-                                    left: '0', 
-                                    color: '#059669',
-                                    fontWeight: '600'
-                                  }}>•</span>
-                                  {rec}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-
-                        {agentForms[agentType].result.next_steps && (
-                          <div style={{ marginBottom: '16px' }}>
-                            <div style={{ 
-                              fontSize: '14px', 
-                              fontWeight: '600', 
-                              color: '#374151',
-                              marginBottom: '8px'
-                            }}>
-                              Next Steps:
-                            </div>
-                            <ul style={{ margin: 0, paddingLeft: '20px', listStyle: 'none' }}>
-                              {agentForms[agentType].result.next_steps.map((step: string, i: number) => (
-                                <li key={i} style={{ 
-                                  marginBottom: '6px',
-                                  fontSize: '14px',
-                                  lineHeight: '1.5',
-                                  color: '#4b5563',
-                                  position: 'relative',
-                                  paddingLeft: '16px'
-                                }}>
-                                  <span style={{ 
-                                    position: 'absolute', 
-                                    left: '0', 
-                                    color: '#f59e0b',
-                                    fontWeight: '600'
-                                  }}>•</span>
-                                  {step}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-
-                        {agentForms[agentType].result.external_referrals && (
-                          <div style={{ marginBottom: '16px' }}>
-                            <div style={{ 
-                              fontSize: '14px', 
-                              fontWeight: '600', 
-                              color: '#374151',
-                              marginBottom: '8px'
-                            }}>
-                              External Referrals:
-                            </div>
-                            <ul style={{ margin: 0, paddingLeft: '20px', listStyle: 'none' }}>
-                              {agentForms[agentType].result.external_referrals.map((ref: string, i: number) => (
-                                <li key={i} style={{ 
-                                  marginBottom: '6px',
-                                  fontSize: '14px',
-                                  lineHeight: '1.5',
-                                  color: '#4b5563',
-                                  position: 'relative',
-                                  paddingLeft: '16px'
-                                }}>
-                                  <span style={{ 
-                                    position: 'absolute', 
-                                    left: '0', 
-                                    color: '#dc2626',
-                                    fontWeight: '600'
-                                  }}>•</span>
-                                  {ref}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-
-                        <button
-                          onClick={() => setAgentForms(prev => ({
-                            ...prev,
-                            [agentType]: { ...prev[agentType], submitted: false }
-                          }))}
-                          style={{
-                            backgroundColor: '#6b7280',
-                            color: 'white',
-                            padding: '8px 16px',
-                            border: 'none',
-                            borderRadius: '6px',
-                            fontSize: '12px',
-                            cursor: 'pointer',
-                            fontWeight: '500',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '6px'
-                          }}
-                        >
-                          <span>🔄</span>
-                          Edit Form
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-
+        {/* Message Display */}
         {message && (
           <div style={{
-            marginTop: '20px',
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
             padding: '16px 20px',
             borderRadius: '10px',
             fontSize: '14px',
