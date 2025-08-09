@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discharge Planning Forms</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #007bff;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        select, textarea, input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        select:focus, textarea:focus, input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+        .form-row .form-group {
+            flex: 1;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .results {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏥 Discharge Planning Dashboard</h1>
+        
+        <div id="alert" class="alert hidden"></div>
+        
+        <form id="dischargeForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="patient">Select Patient *</label>
+                    <select id="patient" required>
+                        <option value="">Loading patients...</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="urgency">Urgency Level</label>
+                    <select id="urgency">
+                        <option value="low">🟢 Low Priority</option>
+                        <option value="medium" selected>🟡 Medium Priority</option>
+                        <option value="high">🔴 High Priority</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="concern">Primary Concern *</label>
+                <textarea id="concern" rows="4" required 
+                    placeholder="Describe the primary concern for discharge planning..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="services">Requested Services</label>
+                <input type="text" id="services" 
+                    placeholder="nursing, equipment, pharmacy" 
+                    value="nursing, equipment">
+            </div>
+            
+            <button type="submit" id="submitBtn">
+                🚀 Process Discharge Planning
+            </button>
+        </form>
+        
+        <div id="results" class="results hidden">
+            <h3>✅ Processing Results</h3>
+            <div id="resultsContent"></div>
+        </div>
+        
+        <div id="agentForms" class="hidden" style="margin-top: 30px; padding: 20px; background-color: #fff3cd; border-radius: 8px; border: 2px solid #ffc107;">
+            <h3 style="color: #856404; margin-bottom: 20px;">📝 Downstream Agent Forms</h3>
+            <p style="margin-bottom: 20px; color: #856404;">Complete the forms below for each recommended agent:</p>
+            <div id="agentFormsContent"></div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px; color: #666;">
+            <p>Backend API: <span id="apiStatus">Checking...</span></p>
+            <p>Patients loaded: <span id="patientCount">0</span></p>
+        </div>
+    </div>
+
+    <script>
+        let patients = [];
+        
+        // Load patients on page load
+        async function loadPatients() {
+            try {
+                const response = await fetch('http://localhost:8000/api/patients');
+                const data = await response.json();
+                patients = data.patients || [];
+                
+                const patientSelect = document.getElementById('patient');
+                patientSelect.innerHTML = '<option value="">Choose patient...</option>';
+                
+                patients.forEach(patient => {
+                    const option = document.createElement('option');
+                    option.value = patient.patient_id;
+                    option.textContent = `${patient.name} - ${patient.primary_diagnosis}`;
+                    patientSelect.appendChild(option);
+                });
+                
+                document.getElementById('patientCount').textContent = patients.length;
+                document.getElementById('apiStatus').textContent = 'Connected ✅';
+                
+            } catch (error) {
+                console.error('Error loading patients:', error);
+                document.getElementById('apiStatus').textContent = 'Error ❌';
+                showAlert('Failed to load patients. Please check if backend is running.', 'error');
+            }
+        }
+        
+        // Show alert message
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alert.classList.remove('hidden');
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    alert.classList.add('hidden');
+                }, 5000);
+            }
+        }
+        
+        // Handle form submission
+        document.getElementById('dischargeForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const patientId = document.getElementById('patient').value;
+            const urgency = document.getElementById('urgency').value;
+            const concern = document.getElementById('concern').value;
+            const services = document.getElementById('services').value;
+            
+            if (!patientId || !concern) {
+                showAlert('Please fill in all required fields.', 'error');
+                return;
+            }
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Processing...';
+            
+            try {
+                const patient = patients.find(p => p.patient_id === patientId);
+                
+                const requestData = {
+                    patient_data: {
+                        patient_id: patient.patient_id,
+                        name: patient.name,
+                        primary_diagnosis: patient.primary_diagnosis,
+                        primary_icu_diagnosis: patient.primary_diagnosis,
+                        age: 65,
+                        gender: "Male",
+                        admission_date: "2024-01-01",
+                        expected_discharge_date: "2024-01-02",
+                        skilled_nursing_needed: "Yes",
+                        equipment_needed: "Hospital bed, IV pole",
+                        medications: ["Heart medication"],
+                        insurance_type: "Medicare",
+                        discharge_destination: "Home"
+                    },
+                    caregiver_input: {
+                        patient_id: patient.patient_id,
+                        urgency_level: urgency,
+                        primary_concern: concern,
+                        requested_services: services.split(',').map(s => s.trim()),
+                        additional_notes: "Processed via HTML form"
+                    }
+                };
+                
+                const response = await fetch('http://localhost:8000/api/process-complete-case', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                // Show success message
+                const agents = result.routing_decision?.recommended_agents || [];
+                showAlert(`✅ Processing Complete! Recommended agents: ${agents.join(', ')}`, 'success');
+                
+                // Display results
+                displayResults(result);
+                
+            } catch (error) {
+                console.error('Processing error:', error);
+                showAlert(`Processing failed: ${error.message}`, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '🚀 Process Discharge Planning';
+            }
+        });
+        
+        // Display results
+        function displayResults(results) {
+            const resultsDiv = document.getElementById('results');
+            const contentDiv = document.getElementById('resultsContent');
+            
+            let html = '';
+            
+            if (results.routing_decision) {
+                const decision = results.routing_decision;
+                html += `
+                    <div style="background-color: #e8f5e8; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+                        <h4 style="color: #155724; margin-bottom: 10px;">🎯 AI Routing Decision</h4>
+                        <p><strong>Patient:</strong> ${decision.patient_id}</p>
+                        <p><strong>Recommended Agents:</strong> ${decision.recommended_agents?.join(', ') || 'None'}</p>
+                        <p><strong>Priority Score:</strong> ${decision.priority_score}/10</p>
+                        <p><strong>Timeline:</strong> ${decision.estimated_timeline}</p>
+                        <p><strong>Reasoning:</strong> ${decision.reasoning}</p>
+                    </div>
+                `;
+            }
+            
+            if (results.agent_responses && results.agent_responses.length > 0) {
+                html += '<h4>🤖 Agent Recommendations</h4>';
+                results.agent_responses.forEach((response, index) => {
+                    html += `
+                        <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 10px; border: 1px solid #dee2e6;">
+                            <h5 style="color: #007bff;">${response.agent_type || `Agent ${index + 1}`}</h5>
+                            ${response.recommendations ? `
+                                <p><strong>Recommendations:</strong></p>
+                                <ul>${response.recommendations.map(rec => `<li>${rec}</li>`).join('')}</ul>
+                            ` : ''}
+                            ${response.next_steps ? `
+                                <p><strong>Next Steps:</strong></p>
+                                <ul>${response.next_steps.map(step => `<li>${step}</li>`).join('')}</ul>
+                            ` : ''}
+                        </div>
+                    `;
+                });
+            }
+            
+            contentDiv.innerHTML = html;
+            resultsDiv.classList.remove('hidden');
+            
+            // Show agent forms if we have recommended agents
+            if (results.routing_decision && results.routing_decision.recommended_agents) {
+                displayAgentForms(results.routing_decision.recommended_agents);
+            }
+            
+            // Scroll to results
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Display agent forms
+        function displayAgentForms(recommendedAgents) {
+            const agentFormsDiv = document.getElementById('agentForms');
+            const contentDiv = document.getElementById('agentFormsContent');
+            
+            let html = '';
+            
+            recommendedAgents.forEach(agentType => {
+                const agentName = agentType === 'dme' ? 'DME (Durable Medical Equipment)' : 
+                                 agentType === 'state' ? 'Insurance & State Programs' : 
+                                 agentType.charAt(0).toUpperCase() + agentType.slice(1);
+                
+                html += `
+                    <div style="background-color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #dee2e6; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <h4 style="color: #007bff; margin-bottom: 15px;">${agentName} Agent</h4>
+                        <form id="form-${agentType}" onsubmit="handleAgentSubmit(event, '${agentType}')">
+                            <div style="margin-bottom: 15px;">
+                                <label style="display: block; margin-bottom: 8px; font-weight: bold; color: #333;">
+                                    Specific Concern for ${agentType.toUpperCase()} *
+                                </label>
+                                <textarea 
+                                    id="concern-${agentType}"
+                                    required 
+                                    rows="3" 
+                                    placeholder="Describe specific ${agentType} requirements..."
+                                    style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box;"
+                                ></textarea>
+                            </div>
+                            
+                            <div style="margin-bottom: 15px;">
+                                <label style="display: block; margin-bottom: 8px; font-weight: bold; color: #333;">
+                                    Additional Notes
+                                </label>
+                                <textarea 
+                                    id="notes-${agentType}"
+                                    rows="2" 
+                                    placeholder="Any additional information for ${agentType} agent..."
+                                    style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box;"
+                                ></textarea>
+                            </div>
+                            
+                            <button type="submit" style="background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">
+                                🚀 Process ${agentType.toUpperCase()} Agent
+                            </button>
+                        </form>
+                        <div id="result-${agentType}" class="hidden" style="margin-top: 15px;"></div>
+                    </div>
+                `;
+            });
+            
+            contentDiv.innerHTML = html;
+            agentFormsDiv.classList.remove('hidden');
+        }
+        
+        // Handle agent form submission
+        async function handleAgentSubmit(event, agentType) {
+            event.preventDefault();
+            
+            const concernField = document.getElementById(`concern-${agentType}`);
+            const notesField = document.getElementById(`notes-${agentType}`);
+            const resultDiv = document.getElementById(`result-${agentType}`);
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            
+            const concern = concernField.value;
+            const notes = notesField.value;
+            
+            if (!concern) {
+                showAlert('Please fill in the concern field.', 'error');
+                return;
+            }
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Processing...';
+            
+            try {
+                const patient = patients.find(p => p.patient_id === document.getElementById('patient').value);
+                
+                const requestData = {
+                    patient_data: {
+                        patient_id: patient.patient_id,
+                        name: patient.name,
+                        primary_diagnosis: patient.primary_diagnosis,
+                        primary_icu_diagnosis: patient.primary_diagnosis,
+                        age: 65,
+                        gender: "Male",
+                        admission_date: "2024-01-01",
+                        expected_discharge_date: "2024-01-02",
+                        skilled_nursing_needed: "Yes",
+                        equipment_needed: "Hospital bed, IV pole",
+                        medications: ["Heart medication"],
+                        insurance_type: "Medicare",
+                        discharge_destination: "Home"
+                    },
+                    caregiver_input: {
+                        patient_id: patient.patient_id,
+                        urgency_level: "medium",
+                        primary_concern: concern,
+                        requested_services: [agentType],
+                        additional_notes: notes
+                    }
+                };
+                
+                let endpoint = '';
+                switch(agentType) {
+                    case 'nursing':
+                        endpoint = 'http://localhost:8000/api/process-nursing-agent';
+                        break;
+                    case 'dme':
+                        endpoint = 'http://localhost:8000/api/process-dme-agent';
+                        break;
+                    case 'pharmacy':
+                        endpoint = 'http://localhost:8000/api/process-pharmacy-agent';
+                        break;
+                    case 'state':
+                        endpoint = 'http://localhost:8000/api/process-state-agent';
+                        break;
+                    default:
+                        throw new Error('Unknown agent type');
+                }
+                
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Agent processing failed: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                // Display agent-specific results
+                let resultHtml = `
+                    <div style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 15px; border: 1px solid #c3e6cb;">
+                        ✅ ${agentType.toUpperCase()} agent processed successfully!
+                    </div>
+                    <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; border: 1px solid #dee2e6;">
+                        <h5 style="color: #28a745; margin-bottom: 10px;">📋 ${agentType.toUpperCase()} Recommendations</h5>
+                `;
+                
+                if (result.recommendations) {
+                    resultHtml += `
+                        <div style="margin-bottom: 15px;">
+                            <strong>Recommendations:</strong>
+                            <ul style="margin-top: 5px; padding-left: 20px;">
+                                ${result.recommendations.map(rec => `<li style="margin-bottom: 5px;">${rec}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+                
+                if (result.next_steps) {
+                    resultHtml += `
+                        <div style="margin-bottom: 15px;">
+                            <strong>Next Steps:</strong>
+                            <ul style="margin-top: 5px; padding-left: 20px;">
+                                ${result.next_steps.map(step => `<li style="margin-bottom: 5px;">${step}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+                
+                if (result.external_referrals) {
+                    resultHtml += `
+                        <div>
+                            <strong>External Referrals:</strong>
+                            <ul style="margin-top: 5px; padding-left: 20px;">
+                                ${result.external_referrals.map(ref => `<li style="margin-bottom: 5px;">${ref}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+                
+                resultHtml += `
+                        <button onclick="resetAgentForm('${agentType}')" style="background-color: #6c757d; color: white; padding: 8px 16px; border: none; border-radius: 5px; font-size: 14px; cursor: pointer; margin-top: 10px;">
+                            🔄 Edit Form
+                        </button>
+                    </div>
+                `;
+                
+                resultDiv.innerHTML = resultHtml;
+                resultDiv.classList.remove('hidden');
+                
+                // Hide the form
+                event.target.style.display = 'none';
+                
+                showAlert(`✅ ${agentType.toUpperCase()} agent processed successfully!`, 'success');
+                
+            } catch (error) {
+                console.error(`Error processing ${agentType} agent:`, error);
+                showAlert(`Processing ${agentType} agent failed: ${error.message}`, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = `🚀 Process ${agentType.toUpperCase()} Agent`;
+            }
+        }
+        
+        // Reset agent form
+        function resetAgentForm(agentType) {
+            const form = document.getElementById(`form-${agentType}`);
+            const resultDiv = document.getElementById(`result-${agentType}`);
+            
+            form.style.display = 'block';
+            resultDiv.classList.add('hidden');
+            
+            // Clear form fields
+            document.getElementById(`concern-${agentType}`).value = '';
+            document.getElementById(`notes-${agentType}`).value = '';
+        }
+        
+        // Load patients when page loads
+        window.addEventListener('load', loadPatients);
+    </script>
+</body>
+</html>
