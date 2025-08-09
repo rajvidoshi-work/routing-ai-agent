@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Routing AI Agent - Healthcare Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .agent-card { border-left: 4px solid #007bff; }
+        .nursing-card { border-left-color: #28a745; }
+        .dme-card { border-left-color: #ffc107; }
+        .pharmacy-card { border-left-color: #dc3545; }
+        .state-card { border-left-color: #6f42c1; }
+        .form-section { background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 20px; }
+        .result-section { margin-top: 30px; }
+        .loading { display: none; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-primary">
+        <div class="container">
+            <span class="navbar-brand mb-0 h1">
+                <i class="fas fa-route"></i> Routing AI Agent - Healthcare MVP
+            </span>
+            <div class="navbar-nav ms-auto">
+                <a href="/manage-data" class="btn btn-outline-light">
+                    <i class="fas fa-database"></i> Manage Data
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Caregiver Input Section -->
+        <div class="form-section">
+            <h4><i class="fas fa-user-nurse"></i> Caregiver Input</h4>
+            <form id="caregiverForm">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="selectedPatient" class="form-label">Select Patient</label>
+                        <select class="form-select" id="selectedPatient" required>
+                            <option value="">Choose patient...</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="urgencyLevel" class="form-label">Urgency Level</label>
+                        <select class="form-select" id="urgencyLevel" required>
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="contactPreference" class="form-label">Contact Preference</label>
+                        <select class="form-select" id="contactPreference">
+                            <option value="phone" selected>Phone</option>
+                            <option value="email">Email</option>
+                            <option value="text">Text</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <label for="primaryConcern" class="form-label">Primary Concern</label>
+                        <textarea class="form-control" id="primaryConcern" rows="3" required 
+                                  placeholder="Describe the main concern or issue..."></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="additionalNotes" class="form-label">Additional Notes</label>
+                        <textarea class="form-control" id="additionalNotes" rows="3" 
+                                  placeholder="Any additional information..."></textarea>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <label for="requestedServices" class="form-label">Requested Services</label>
+                        <input type="text" class="form-control" id="requestedServices" 
+                               placeholder="e.g., nursing assessment, medication review">
+                        <div class="form-text">Separate multiple services with commas</div>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="fas fa-route"></i> Process Case
+                    </button>
+                    <div class="loading">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Processing...</span>
+                        </div>
+                        Processing case...
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="result-section" style="display: none;">
+            <h4><i class="fas fa-clipboard-list"></i> Processing Results</h4>
+            
+            <!-- Routing Decision -->
+            <div id="routingResult" class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5><i class="fas fa-route"></i> Routing Decision</h5>
+                </div>
+                <div class="card-body" id="routingContent">
+                    <!-- Routing decision will be populated here -->
+                </div>
+            </div>
+
+            <!-- Agent Responses -->
+            <div id="agentResponses">
+                <!-- Agent response cards will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Global variables
+        let patients = [];
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPatients();
+        });
+
+        // Load patients
+        async function loadPatients() {
+            try {
+                const response = await fetch('/patients');
+                const result = await response.json();
+                patients = result.patients;
+
+                const patientList = document.getElementById('patientList');
+                const patientSelect = document.getElementById('selectedPatient');
+
+                if (patients.length === 0) {
+                    patientList.innerHTML = '<p class="text-muted">No patients loaded yet</p>';
+                    patientSelect.innerHTML = '<option value="">Choose patient...</option>';
+                    return;
+                }
+
+                // Update patient list display
+                patientList.innerHTML = patients.map(p => 
+                    `<div class="mb-2">
+                        <strong>${p.name}</strong> (${p.patient_id})
+                        <br><small class="text-muted">${p.primary_icu_diagnosis}</small>
+                    </div>`
+                ).join('');
+
+                // Update patient select dropdown
+                patientSelect.innerHTML = '<option value="">Choose patient...</option>' +
+                    patients.map(p => 
+                        `<option value="${p.patient_id}">${p.name} (${p.patient_id})</option>`
+                    ).join('');
+
+            } catch (error) {
+                console.error('Failed to load patients:', error);
+            }
+        }
+
+        // Refresh patients button
+        document.getElementById('refreshPatients').addEventListener('click', loadPatients);
+
+        // Caregiver form handler
+        document.getElementById('caregiverForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const selectedPatientId = document.getElementById('selectedPatient').value;
+            if (!selectedPatientId) {
+                alert('Please select a patient');
+                return;
+            }
+
+            const selectedPatient = patients.find(p => p.patient_id === selectedPatientId);
+            if (!selectedPatient) {
+                alert('Selected patient not found');
+                return;
+            }
+
+            // Show loading
+            document.querySelector('.loading').style.display = 'inline-block';
+            document.querySelector('button[type="submit"]').disabled = true;
+
+            // Prepare request data
+            const requestData = {
+                patient_data: selectedPatient,
+                caregiver_input: {
+                    patient_id: selectedPatientId,
+                    urgency_level: document.getElementById('urgencyLevel').value,
+                    primary_concern: document.getElementById('primaryConcern').value,
+                    requested_services: document.getElementById('requestedServices').value.split(',').map(s => s.trim()).filter(s => s),
+                    additional_notes: document.getElementById('additionalNotes').value,
+                    contact_preference: document.getElementById('contactPreference').value
+                }
+            };
+
+            try {
+                const response = await fetch('/process-complete-case', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    displayResults(result);
+                } else {
+                    alert(`Processing failed: ${result.detail}`);
+                }
+            } catch (error) {
+                alert(`Processing failed: ${error.message}`);
+            } finally {
+                // Hide loading
+                document.querySelector('.loading').style.display = 'none';
+                document.querySelector('button[type="submit"]').disabled = false;
+            }
+        });
+
+        // Display results
+        function displayResults(result) {
+            const resultsSection = document.getElementById('resultsSection');
+            const routingContent = document.getElementById('routingContent');
+            const agentResponses = document.getElementById('agentResponses');
+
+            // Display routing decision
+            const routing = result.routing_decision;
+            routingContent.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Recommended Agents:</h6>
+                        <div class="mb-2">
+                            ${routing.recommended_agents.map(agent => 
+                                `<span class="badge bg-primary me-1">${agent.toUpperCase()}</span>`
+                            ).join('')}
+                        </div>
+                        <h6>Priority Score:</h6>
+                        <div class="progress mb-2">
+                            <div class="progress-bar" style="width: ${routing.priority_score * 10}%">
+                                ${routing.priority_score}/10
+                            </div>
+                        </div>
+                        <h6>Timeline:</h6>
+                        <p>${routing.estimated_timeline}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Reasoning:</h6>
+                        <p>${routing.reasoning}</p>
+                    </div>
+                </div>
+            `;
+
+            // Display agent responses
+            agentResponses.innerHTML = result.agent_responses.map(response => {
+                const agentClass = `${response.agent_type}-card`;
+                const agentIcon = {
+                    'nursing': 'fa-user-nurse',
+                    'dme': 'fa-wheelchair',
+                    'pharmacy': 'fa-pills',
+                    'state': 'fa-file-medical'
+                }[response.agent_type] || 'fa-cog';
+
+                return `
+                    <div class="card agent-card ${agentClass} mb-3">
+                        <div class="card-header">
+                            <h5><i class="fas ${agentIcon}"></i> ${response.agent_type.toUpperCase()} Agent Response</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Recommendations:</h6>
+                                    <ul>
+                                        ${response.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                                    </ul>
+                                    <h6>Next Steps:</h6>
+                                    <ul>
+                                        ${response.next_steps.map(step => `<li>${step}</li>`).join('')}
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Editable Form:</h6>
+                                    <div class="border p-3 bg-light">
+                                        <strong>${response.form_data.title}</strong>
+                                        <p class="small text-muted">Recipient: ${response.form_data.recipient}</p>
+                                        ${response.form_data.fields.slice(0, 3).map(field => 
+                                            `<div class="mb-2">
+                                                <label class="form-label small">${field.label}:</label>
+                                                <input type="text" class="form-control form-control-sm" value="${field.value}" readonly>
+                                            </div>`
+                                        ).join('')}
+                                        <button class="btn btn-sm btn-outline-primary">Edit Full Form</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            resultsSection.style.display = 'block';
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Load patients on page load
+        document.addEventListener('DOMContentLoaded', loadPatients);
+    </script>
+</body>
+</html>

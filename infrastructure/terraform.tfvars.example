@@ -1,0 +1,20 @@
+# Copy this file to terraform.tfvars and fill in your values
+
+aws_region = "us-east-1"
+project_name = "routing-ai-agent"
+environment = "production"
+
+# VPC Configuration
+vpc_cidr = "10.0.0.0/16"
+
+# ECS Configuration
+ecs_cpu = "512"
+ecs_memory = "1024"
+ecs_desired_count = 2
+
+# AI API Keys (Choose one or both)
+# Option 1: Google AI Studio (Recommended - Free tier available)
+google_ai_api_key = "your-google-ai-studio-api-key-here"
+
+# Option 2: OpenAI (Alternative)
+# openai_api_key = "your-openai-api-key-here"

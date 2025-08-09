@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Data - Routing AI Agent</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .data-card { 
+            border-left: 4px solid #007bff; 
+            transition: all 0.3s ease;
+        }
+        .data-card:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .patient-card {
+            border-left: 4px solid #28a745;
+            transition: all 0.3s ease;
+        }
+        .patient-card:hover {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .file-item {
+            transition: all 0.3s ease;
+        }
+        .file-item:hover {
+            background-color: #f8f9fa;
+        }
+        .status-success { border-left-color: #28a745; }
+        .status-warning { border-left-color: #ffc107; }
+        .status-danger { border-left-color: #dc3545; }
+        .loading { display: none; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-primary">
+        <div class="container">
+            <a href="/" class="navbar-brand mb-0 h1">
+                <i class="fas fa-route"></i> Routing AI Agent - Healthcare MVP
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a href="/" class="btn btn-outline-light">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Page Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2><i class="fas fa-database"></i> Manage Patient Data</h2>
+                <p class="text-muted">Manage Excel files, monitor data loading status, and view loaded patients</p>
+            </div>
+        </div>
+
+        <!-- Data Management Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card data-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-folder-open"></i> Patient Data Management</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Data Directory -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Data Directory</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="dataDirectory" placeholder="/Users/rajvi/patient_data" readonly>
+                                    <button class="btn btn-outline-secondary" type="button" onclick="refreshDataStatus()">
+                                        <i class="fas fa-sync"></i> Refresh
+                                    </button>
+                                </div>
+                                <div class="form-text">Excel files are automatically loaded from this directory</div>
+                            </div>
+
+                            <!-- Quick Actions -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Quick Actions</label>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <button type="button" class="btn btn-primary" onclick="refreshData()">
+                                        <i class="fas fa-sync"></i> Reload Latest
+                                    </button>
+                                    <button type="button" class="btn btn-outline-info" onclick="showDataInfo()">
+                                        <i class="fas fa-info-circle"></i> Format Guide
+                                    </button>
+                                    <button type="button" class="btn btn-outline-success" onclick="openDataDirectory()">
+                                        <i class="fas fa-folder-open"></i> Open Directory
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Status Display -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div id="uploadResult" class="mb-3">
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-spinner fa-spin"></i> Loading data status...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Available Files -->
+                        <div class="row">
+                            <div class="col-12">
+                                <h6><i class="fas fa-file-excel"></i> Available Files</h6>
+                                <div id="availableFiles" class="list-group">
+                                    <div class="list-group-item text-muted">
+                                        <i class="fas fa-spinner fa-spin"></i> Loading files...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loaded Patients Section -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card patient-card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5><i class="fas fa-users"></i> Loaded Patients</h5>
+                        <button class="btn btn-sm btn-outline-primary" onclick="loadPatients()">
+                            <i class="fas fa-sync"></i> Refresh
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <!-- Patient Summary -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <h3 class="text-primary mb-1" id="patientCount">-</h3>
+                                        <p class="mb-0 text-muted">Total Patients</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <h3 class="text-success mb-1" id="nursingCount">-</h3>
+                                        <p class="mb-0 text-muted">Need Nursing Care</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Patient List -->
+                        <div id="patientList">
+                            <div class="text-center text-muted">
+                                <i class="fas fa-spinner fa-spin"></i> Loading patients...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Format Info Modal -->
+    <div class="modal fade" id="dataInfoModal" tabindex="-1" aria-labelledby="dataInfoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="dataInfoModalLabel">
+                        <i class="fas fa-table"></i> Excel File Format Guide
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> 
+                        <strong>Instructions:</strong> Place your Excel files (.xlsx or .xls) in the data directory. 
+                        The system will automatically load the most recent file.
+                    </div>
+                    
+                    <h6>Required Excel Columns:</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-primary">Patient Information</h6>
+                            <ul class="list-unstyled small">
+                                <li>• <code>PatientID</code> or <code>Patient ID</code></li>
+                                <li>• <code>Name</code></li>
+                                <li>• <code>Gender</code></li>
+                                <li>• <code>Date of Birth</code> or <code>Age</code></li>
+                                <li>• <code>MRN</code></li>
+                                <li>• <code>Address</code></li>
+                                <li>• <code>Contact Number</code> or <code>Phone</code></li>
+                            </ul>
+                            
+                            <h6 class="text-success">Medical Information</h6>
+                            <ul class="list-unstyled small">
+                                <li>• <code>Primary ICU Diagnosis</code></li>
+                                <li>• <code>Secondary Diagnoses</code></li>
+                                <li>• <code>Allergies</code></li>
+                                <li>• <code>ICU Admission Date</code></li>
+                                <li>• <code>ICU Discharge Date</code></li>
+                                <li>• <code>Length of Stay (Days)</code></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-warning">Medication & Care</h6>
+                            <ul class="list-unstyled small">
+                                <li>• <code>Medication</code></li>
+                                <li>• <code>Dosage</code></li>
+                                <li>• <code>Frequency</code></li>
+                                <li>• <code>Route</code></li>
+                                <li>• <code>Prescriber Name</code></li>
+                                <li>• <code>NPI Number</code></li>
+                                <li>• <code>Skilled Nursing Needed</code></li>
+                                <li>• <code>Nursing Visit Frequency</code></li>
+                            </ul>
+                            
+                            <h6 class="text-danger">Equipment & Services</h6>
+                            <ul class="list-unstyled small">
+                                <li>• <code>Equipment Needed</code></li>
+                                <li>• <code>DME Supplier</code></li>
+                                <li>• <code>Physical Therapy</code></li>
+                                <li>• <code>Transportation Needed</code></li>
+                                <li>• <code>Insurance Coverage Status</code></li>
+                                <li>• <code>Special Instructions</code></li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i> 
+                        <strong>Flexible Column Names:</strong> The system supports multiple column name variations 
+                        (e.g., "PatientID", "Patient ID", "patient_id" all work for patient identification).
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Global variables
+        let patients = [];
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            refreshDataStatus();
+            loadPatients();
+        });
+
+        // Refresh data status and available files
+        async function refreshDataStatus() {
+            try {
+                const response = await fetch('/data-status');
+                const result = await response.json();
+                
+                document.getElementById('dataDirectory').value = result.data_directory;
+                
+                const filesContainer = document.getElementById('availableFiles');
+                if (result.available_files && result.available_files.length > 0) {
+                    filesContainer.innerHTML = result.available_files.map(file => `
+                        <div class="list-group-item file-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong><i class="fas fa-file-excel text-success"></i> ${file.filename}</strong>
+                                <br><small class="text-muted">Modified: ${file.modified} | Size: ${(file.size / 1024).toFixed(1)} KB</small>
+                            </div>
+                            <button class="btn btn-sm btn-outline-primary" onclick="loadSpecificFile('${file.filename}')">
+                                <i class="fas fa-upload"></i> Load
+                            </button>
+                        </div>
+                    `).join('');
+                } else {
+                    filesContainer.innerHTML = `
+                        <div class="list-group-item text-muted">
+                            <i class="fas fa-info-circle"></i> No Excel files found in data directory
+                            <br><small>Place your Excel files in: ${result.data_directory}</small>
+                        </div>
+                    `;
+                }
+                
+                // Update status
+                if (result.total_patients > 0) {
+                    document.getElementById('uploadResult').innerHTML = 
+                        `<div class="alert alert-success">
+                            <i class="fas fa-check-circle"></i> ${result.total_patients} patients loaded successfully
+                        </div>`;
+                } else {
+                    document.getElementById('uploadResult').innerHTML = 
+                        `<div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> ${result.status}
+                        </div>`;
+                }
+                
+            } catch (error) {
+                console.error('Error refreshing data status:', error);
+                document.getElementById('availableFiles').innerHTML = `
+                    <div class="list-group-item text-danger">
+                        <i class="fas fa-exclamation-triangle"></i> Error loading file list
+                    </div>
+                `;
+            }
+        }
+
+        // Load specific file
+        async function loadSpecificFile(filename) {
+            try {
+                const response = await fetch(`/load-file/${filename}`, {
+                    method: 'POST'
+                });
+                const result = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('uploadResult').innerHTML = 
+                        `<div class="alert alert-success">${result.message}</div>`;
+                    loadPatients();
+                    refreshDataStatus();
+                } else {
+                    document.getElementById('uploadResult').innerHTML = 
+                        `<div class="alert alert-danger">Error: ${result.detail}</div>`;
+                }
+            } catch (error) {
+                document.getElementById('uploadResult').innerHTML = 
+                    `<div class="alert alert-danger">Load failed: ${error.message}</div>`;
+            }
+        }
+
+        // Refresh data (reload latest file)
+        async function refreshData() {
+            try {
+                const response = await fetch('/refresh-data', {
+                    method: 'POST'
+                });
+                const result = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('uploadResult').innerHTML = 
+                        `<div class="alert alert-success">${result.message}</div>`;
+                    loadPatients();
+                    refreshDataStatus();
+                } else {
+                    document.getElementById('uploadResult').innerHTML = 
+                        `<div class="alert alert-danger">Error: ${result.detail}</div>`;
+                }
+            } catch (error) {
+                document.getElementById('uploadResult').innerHTML = 
+                    `<div class="alert alert-danger">Refresh failed: ${error.message}</div>`;
+            }
+        }
+
+        // Show data info modal
+        function showDataInfo() {
+            const modal = new bootstrap.Modal(document.getElementById('dataInfoModal'));
+            modal.show();
+        }
+
+        // Open data directory (copy path to clipboard)
+        function openDataDirectory() {
+            const directory = document.getElementById('dataDirectory').value;
+            navigator.clipboard.writeText(directory).then(() => {
+                alert(`Data directory path copied to clipboard:\n${directory}`);
+            }).catch(() => {
+                alert(`Data directory path:\n${directory}`);
+            });
+        }
+
+        // Load patients
+        async function loadPatients() {
+            try {
+                const response = await fetch('/patients');
+                const result = await response.json();
+                patients = result.patients;
+
+                const patientList = document.getElementById('patientList');
+                const patientCount = document.getElementById('patientCount');
+                
+                patientCount.textContent = patients.length;
+
+                if (patients.length === 0) {
+                    patientList.innerHTML = '<p class="text-muted text-center">No patients loaded yet</p>';
+                    document.getElementById('nursingCount').textContent = '0';
+                    return;
+                }
+
+                // Count patients needing nursing
+                const nursingNeeded = patients.filter(p => 
+                    p.skilled_nursing_needed && p.skilled_nursing_needed.toLowerCase() === 'yes'
+                ).length;
+                document.getElementById('nursingCount').textContent = nursingNeeded;
+
+                // Generate patient cards
+                patientList.innerHTML = `
+                    <div class="row">
+                        ${patients.map(patient => `
+                            <div class="col-md-6 col-lg-4 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h6 class="card-title">
+                                            <i class="fas fa-user"></i> ${patient.name}
+                                        </h6>
+                                        <p class="card-text">
+                                            <small class="text-muted">ID: ${patient.patient_id}</small><br>
+                                            <strong>Diagnosis:</strong> ${patient.primary_diagnosis}<br>
+                                            <strong>Nursing:</strong> 
+                                            <span class="badge ${patient.skilled_nursing_needed === 'Yes' ? 'bg-success' : 'bg-secondary'}">
+                                                ${patient.skilled_nursing_needed || 'No'}
+                                            </span><br>
+                                            <strong>Equipment:</strong> ${patient.equipment_needed || 'None'}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+
+            } catch (error) {
+                console.error('Error loading patients:', error);
+                document.getElementById('patientList').innerHTML = 
+                    '<div class="alert alert-danger">Error loading patients</div>';
+            }
+        }
+    </script>
+</body>
+</html>

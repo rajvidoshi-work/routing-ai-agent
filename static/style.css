@@ -1,0 +1,72 @@
+/* Additional styles for the Routing AI Agent dashboard */
+
+.agent-card {
+    transition: transform 0.2s ease-in-out;
+}
+
+.agent-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.nursing-card {
+    border-left-color: #28a745 !important;
+}
+
+.dme-card {
+    border-left-color: #ffc107 !important;
+}
+
+.pharmacy-card {
+    border-left-color: #dc3545 !important;
+}
+
+.form-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 1px solid #dee2e6;
+}
+
+.result-section {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.loading {
+    color: #6c757d;
+    font-style: italic;
+}
+
+.progress {
+    height: 20px;
+}
+
+.badge {
+    font-size: 0.8em;
+}
+
+.card-header h5 {
+    margin-bottom: 0;
+}
+
+.text-muted {
+    font-size: 0.9em;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+    
+    .form-section {
+        padding: 15px;
+    }
+    
+    .card-body {
+        padding: 15px;
+    }
+}
