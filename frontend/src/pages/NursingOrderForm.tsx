@@ -97,11 +97,6 @@ const NursingOrderForm: React.FC<NursingOrderFormProps> = () => {
   const handleNursingFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!nursingForm.patient_name) {
-      setMessage('❌ Please fill in required fields.');
-      return;
-    }
-
     setLoading(true);
     setMessage('Processing nursing order form...');
 
@@ -476,108 +471,6 @@ const NursingOrderForm: React.FC<NursingOrderFormProps> = () => {
 
             {!nursingForm.submitted ? (
               <form onSubmit={handleNursingFormSubmit}>
-                {/* Patient Information Section */}
-                <div style={{ 
-                  backgroundColor: '#f8fafc', 
-                  padding: '20px', 
-                  borderRadius: '8px', 
-                  marginBottom: '24px',
-                  border: '1px solid #f1f5f9'
-                }}>
-                  <h4 style={{ 
-                    color: '#0ea5e9', 
-                    marginBottom: '16px',
-                    fontSize: '16px',
-                    fontWeight: '600'
-                  }}>
-                    📝 Patient Information
-                  </h4>
-                  
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                    <div>
-                      <label style={labelStyle}>Patient Name *</label>
-                      <input
-                        type="text"
-                        value={nursingForm.patient_name || ''}
-                        onChange={(e) => updateNursingForm('patient_name', e.target.value)}
-                        required
-                        placeholder="Full patient name"
-                        style={inputStyle}
-                      />
-                    </div>
-                    <div>
-                      <label style={labelStyle}>Primary Diagnosis *</label>
-                      <input
-                        type="text"
-                        value={nursingForm.primary_diagnosis || ''}
-                        onChange={(e) => updateNursingForm('primary_diagnosis', e.target.value)}
-                        required
-                        placeholder="Primary diagnosis"
-                        style={inputStyle}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Nursing Care Plan Section */}
-                <div style={{ 
-                  backgroundColor: '#f0f9ff', 
-                  padding: '20px', 
-                  borderRadius: '8px', 
-                  marginBottom: '24px',
-                  border: '1px solid #bae6fd'
-                }}>
-                  <h4 style={{ 
-                    color: '#0ea5e9', 
-                    marginBottom: '16px',
-                    fontSize: '16px',
-                    fontWeight: '600'
-                  }}>
-                    🏥 Nursing Care Plan
-                  </h4>
-
-                  <div style={{ marginBottom: '16px' }}>
-                    <label style={labelStyle}>Skilled Nursing Services Needed *</label>
-                    <textarea
-                      value={nursingForm.skilled_nursing_needed || ''}
-                      onChange={(e) => updateNursingForm('skilled_nursing_needed', e.target.value)}
-                      required
-                      rows={3}
-                      placeholder="Describe the skilled nursing services required"
-                      style={{...inputStyle, minHeight: '90px', resize: 'vertical'}}
-                    />
-                  </div>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                    <div>
-                      <label style={labelStyle}>Visit Frequency *</label>
-                      <select
-                        value={nursingForm.visit_frequency || ''}
-                        onChange={(e) => updateNursingForm('visit_frequency', e.target.value)}
-                        required
-                        style={inputStyle}
-                      >
-                        <option value="">Select frequency</option>
-                        <option value="daily">Daily</option>
-                        <option value="3x/week">3x per week</option>
-                        <option value="weekly">Weekly</option>
-                        <option value="bi-weekly">Bi-weekly</option>
-                        <option value="monthly">Monthly</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label style={labelStyle}>First Visit Target</label>
-                      <input
-                        type="text"
-                        value={nursingForm.first_visit_target || ''}
-                        onChange={(e) => updateNursingForm('first_visit_target', e.target.value)}
-                        placeholder="e.g., within 24 hours"
-                        style={inputStyle}
-                      />
-                    </div>
-                  </div>
-                </div>
-
                 {/* Submit Button */}
                 <button
                   type="submit"
@@ -641,22 +534,19 @@ const NursingOrderForm: React.FC<NursingOrderFormProps> = () => {
                     fontWeight: '600',
                     marginBottom: '16px'
                   }}>
-                    📋 Order Summary
+                    📋 Next Steps
                   </h3>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                    <div>
-                      <strong style={{ color: '#0ea5e9' }}>Patient:</strong>
-                      <p style={{ margin: '4px 0', color: '#64748b' }}>{nursingForm.patient_name}</p>
-                    </div>
-                    <div>
-                      <strong style={{ color: '#0ea5e9' }}>Visit Frequency:</strong>
-                      <p style={{ margin: '4px 0', color: '#64748b' }}>{nursingForm.visit_frequency}</p>
-                    </div>
-                  </div>
-                  <div style={{ marginTop: '12px' }}>
-                    <strong style={{ color: '#0ea5e9' }}>Services:</strong>
-                    <p style={{ margin: '4px 0', color: '#64748b' }}>{nursingForm.skilled_nursing_needed}</p>
-                  </div>
+                  <ul style={{
+                    color: '#64748b',
+                    fontSize: '14px',
+                    lineHeight: '1.6',
+                    paddingLeft: '20px'
+                  }}>
+                    <li>Review the AI-recommended nurses above</li>
+                    <li>Contact your preferred nurse directly</li>
+                    <li>Coordinate care plan and scheduling</li>
+                    <li>Verify insurance coverage and authorization</li>
+                  </ul>
                 </div>
               </div>
             )}
