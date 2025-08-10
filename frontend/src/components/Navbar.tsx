@@ -4,9 +4,10 @@ import { Link, useLocation } from 'react-router-dom';
 
 const Navbar: React.FC = () => {
   const location = useLocation();
-  const isPatientDetailsPage = location.pathname === '/';
+  const isDashboardPage = location.pathname === '/';
+  const isPatientDetailsPage = location.pathname === '/patient-details';
   const isManageDataPage = location.pathname === '/manage-data';
-  const isDashboardPage = location.pathname === '/dashboard';
+  const isEnhancedDashboardPage = location.pathname === '/dashboard';
 
   return (
     <BootstrapNavbar bg="primary" variant="dark" expand="lg">
@@ -17,26 +18,31 @@ const Navbar: React.FC = () => {
         </BootstrapNavbar.Brand>
         
         <Nav className="ms-auto">
-          {isPatientDetailsPage ? (
+          {isDashboardPage ? (
             <Nav.Link as={Link} to="/manage-data" className="btn btn-outline-light">
               <i className="fas fa-database me-2"></i>
               Manage Data
             </Nav.Link>
+          ) : isPatientDetailsPage ? (
+            <Nav.Link as={Link} to="/" className="btn btn-outline-light">
+              <i className="fas fa-arrow-left me-2"></i>
+              Back to Dashboard
+            </Nav.Link>
           ) : isManageDataPage ? (
             <Nav.Link as={Link} to="/" className="btn btn-outline-light">
-              <i className="fas fa-user-injured me-2"></i>
-              Patient Details
+              <i className="fas fa-tachometer-alt me-2"></i>
+              Dashboard
             </Nav.Link>
-          ) : isDashboardPage ? (
-            <Nav.Link as={Link} to="/" className="btn btn-outline-light">
+          ) : isEnhancedDashboardPage ? (
+            <Nav.Link as={Link} to="/patient-details" className="btn btn-outline-light">
               <i className="fas fa-arrow-left me-2"></i>
               Back to Patient Details
             </Nav.Link>
           ) : (
             <>
               <Nav.Link as={Link} to="/" className="btn btn-outline-light me-2">
-                <i className="fas fa-user-injured me-2"></i>
-                Patient Details
+                <i className="fas fa-tachometer-alt me-2"></i>
+                Dashboard
               </Nav.Link>
               <Nav.Link as={Link} to="/manage-data" className="btn btn-outline-light">
                 <i className="fas fa-database me-2"></i>

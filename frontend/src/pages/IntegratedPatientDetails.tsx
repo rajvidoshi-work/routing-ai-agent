@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useScrollToTop } from '../hooks/useScrollToTop';
 import './PatientDetails.css';
 
@@ -7,6 +7,7 @@ interface IntegratedPatientDetailsProps {}
 
 const IntegratedPatientDetails: React.FC<IntegratedPatientDetailsProps> = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [patients, setPatients] = useState<any[]>([]);
   const [selectedPatient, setSelectedPatient] = useState<any>(null);
 
@@ -18,14 +19,25 @@ const IntegratedPatientDetails: React.FC<IntegratedPatientDetailsProps> = () => 
     loadPatients();
   }, []);
 
+  useEffect(() => {
+    // Check if we have a specific patient ID from dashboard navigation
+    if (location.state && location.state.selectedPatientId && patients.length > 0) {
+      const patientFromDashboard = patients.find(p => p.patient_id === location.state.selectedPatientId);
+      if (patientFromDashboard) {
+        setSelectedPatient(patientFromDashboard);
+      }
+    } else if (patients.length > 0 && !selectedPatient) {
+      // Auto-select the first patient if no specific patient was requested
+      setSelectedPatient(patients[0]);
+    }
+  }, [location.state, patients, selectedPatient]);
+
   const loadPatients = async () => {
     try {
       const response = await fetch('http://localhost:8000/api/patients');
       const data = await response.json();
       if (data.patients && data.patients.length > 0) {
         setPatients(data.patients);
-        // Auto-select the first patient for demo purposes
-        setSelectedPatient(data.patients[0]);
       }
     } catch (error) {
       console.error('Failed to load patients:', error);
@@ -105,8 +117,13 @@ const IntegratedPatientDetails: React.FC<IntegratedPatientDetailsProps> = () => 
   };
 
   const handleBack = () => {
-    // Navigate to manage data page
-    navigate('/manage-data');
+    // Check if we came from dashboard
+    if (location.state && location.state.fromDashboard) {
+      navigate('/');
+    } else {
+      // Navigate to manage data page
+      navigate('/manage-data');
+    }
   };
 
   const handlePatientSelect = (patient: any) => {
@@ -136,7 +153,9 @@ const IntegratedPatientDetails: React.FC<IntegratedPatientDetailsProps> = () => 
             <div className="logo-icon">+</div>
             <span className="logo-text">Adonix Medical</span>
           </div>
-          <button onClick={handleBack} className="back-btn">← Back to Data Management</button>
+          <button onClick={handleBack} className="back-btn">
+            {location.state && location.state.fromDashboard ? '← Back to Dashboard' : '← Back to Data Management'}
+          </button>
         </div>
       </header>
       
