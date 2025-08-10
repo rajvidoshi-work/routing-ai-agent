@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 // Add CSS animation for spinner
@@ -37,7 +37,7 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
   }, [location.state, navigate]);
 
   // Function to autofill DME form with LLM-generated realistic data
-  const autofillDMEForm = async (patientData: any) => {
+  const autofillDMEForm = useCallback(async (patientData: any) => {
     try {
       // Make API call to get autofill data from backend
       const requestData = {
@@ -76,7 +76,7 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
       // Fallback to sample data
       setDmeForm(getSamplePatientInfo(patientData));
     }
-  };
+  }, []);
 
   // Fallback sample data function
   const getSamplePatientInfo = (patientData: any) => {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 // Add CSS animation for spinner
@@ -37,7 +37,7 @@ const PharmacyOrderForm: React.FC<PharmacyOrderFormProps> = () => {
   }, [location.state, navigate]);
 
   // Function to autofill Pharmacy form with LLM-generated realistic data
-  const autofillPharmacyForm = async (patientData: any) => {
+  const autofillPharmacyForm = useCallback(async (patientData: any) => {
     try {
       // Make API call to get autofill data from backend
       const requestData = {
@@ -76,7 +76,7 @@ const PharmacyOrderForm: React.FC<PharmacyOrderFormProps> = () => {
       // Fallback to sample data
       setPharmacyForm(getSamplePharmacyInfo(patientData));
     }
-  };
+  }, []);
 
   // Fallback sample data function for pharmacy
   const getSamplePharmacyInfo = (patientData: any) => {

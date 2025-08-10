@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 // Add CSS animation for spinner
@@ -37,7 +37,7 @@ const StateAuthorizationForm: React.FC<StateAuthorizationFormProps> = () => {
   }, [location.state, navigate]);
 
   // Function to autofill State form with LLM-generated realistic data
-  const autofillStateForm = async (patientData: any) => {
+  const autofillStateForm = useCallback(async (patientData: any) => {
     try {
       // Make API call to get autofill data from backend
       const requestData = {
@@ -76,7 +76,7 @@ const StateAuthorizationForm: React.FC<StateAuthorizationFormProps> = () => {
       // Fallback to sample data
       setStateForm(getSampleStateInfo(patientData));
     }
-  };
+  }, []);
 
   // Fallback sample data function for state authorization
   const getSampleStateInfo = (patientData: any) => {

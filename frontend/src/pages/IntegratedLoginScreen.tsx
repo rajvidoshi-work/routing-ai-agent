@@ -166,9 +166,26 @@ const IntegratedLoginScreen: React.FC<IntegratedLoginScreenProps> = () => {
                 )}
               </button>
             </div>
-            <a href="#" className="forgot-password" onClick={handleForgotPassword}>
+            <button
+              type="button"
+              className="forgot-password"
+              onClick={handleForgotPassword}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: '#0ea5e9',
+                textDecoration: 'none',
+                fontSize: '14px',
+                fontWeight: '500',
+                cursor: 'pointer',
+                display: 'block',
+                textAlign: 'right',
+                marginTop: '8px',
+                padding: 0
+              }}
+            >
               Forgot Password?
-            </a>
+            </button>
           </div>
           
           <button 
@@ -211,9 +228,23 @@ const IntegratedLoginScreen: React.FC<IntegratedLoginScreenProps> = () => {
               />
               Remember me
             </label>
-            <a href="#" className="need-help" onClick={handleNeedHelp}>
+            <button
+              type="button"
+              className="need-help"
+              onClick={handleNeedHelp}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: '#0ea5e9',
+                textDecoration: 'none',
+                fontSize: '14px',
+                fontWeight: '500',
+                cursor: 'pointer',
+                padding: 0
+              }}
+            >
               Need Help?
-            </a>
+            </button>
           </div>
         </form>
 
