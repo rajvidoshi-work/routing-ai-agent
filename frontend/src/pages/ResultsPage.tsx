@@ -79,12 +79,12 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
           ...prev,
           [agentType]: { ...formData, result, submitted: true }
         }));
-        setMessage(`✅ ${agentType.toUpperCase()} agent processed successfully!`);
+        setMessage(`${agentType.toUpperCase()} agent processed successfully!`);
       } else {
-        setMessage(`❌ ${agentType.toUpperCase()} agent processing failed`);
+        setMessage(`${agentType.toUpperCase()} agent processing failed`);
       }
     } catch (err) {
-      setMessage(`❌ Error processing ${agentType} agent`);
+      setMessage(`Error processing ${agentType} agent`);
     } finally {
       setLoading(false);
     }
@@ -343,7 +343,7 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
               {results.agent_responses.map((response: any, index: number) => (
                 <div key={index} style={agentCardStyle}>
                   <h4 style={{ 
-                    color: '#2563eb', 
+                    color: '#0ea5e9', 
                     marginBottom: '16px',
                     fontSize: '16px',
                     fontWeight: '600',
@@ -367,7 +367,7 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
                       <div style={{ 
                         fontSize: '14px', 
                         fontWeight: '600', 
-                        color: '#059669',
+                        color: '#0ea5e9',
                         marginBottom: '8px',
                         display: 'flex',
                         alignItems: 'center',
@@ -392,7 +392,7 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
                             <span style={{ 
                               position: 'absolute', 
                               left: '0', 
-                              color: '#059669',
+                              color: '#0ea5e9',
                               fontWeight: '600'
                             }}>•</span>
                             {rec}
@@ -447,13 +447,13 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
                       <div style={{ 
                         fontSize: '14px', 
                         fontWeight: '600', 
-                        color: '#dc2626',
+                        color: '#0ea5e9',
                         marginBottom: '8px',
                         display: 'flex',
                         alignItems: 'center',
                         gap: '6px'
                       }}>
-                        <span>🔗</span> External Referrals
+                        <span></span> External Referrals
                       </div>
                       <ul style={{ 
                         margin: 0, 
@@ -472,7 +472,7 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
                             <span style={{ 
                               position: 'absolute', 
                               left: '0', 
-                              color: '#dc2626',
+                              color: '#0ea5e9',
                               fontWeight: '600'
                             }}>•</span>
                             {ref}
@@ -496,7 +496,7 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
                           });
                         }}
                         style={{
-                          background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                          background: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)',
                           color: 'white',
                           padding: '12px 24px',
                           border: 'none',
@@ -507,16 +507,16 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
                           display: 'flex',
                           alignItems: 'center',
                           gap: '8px',
-                          boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
+                          boxShadow: '0 4px 12px rgba(14, 165, 233, 0.3)',
                           transition: 'all 0.2s ease'
                         }}
                         onMouseOver={(e) => {
                           e.currentTarget.style.transform = 'translateY(-1px)';
-                          e.currentTarget.style.boxShadow = '0 6px 16px rgba(59, 130, 246, 0.4)';
+                          e.currentTarget.style.boxShadow = '0 6px 16px rgba(14, 165, 233, 0.4)';
                         }}
                         onMouseOut={(e) => {
                           e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)';
+                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(14, 165, 233, 0.3)';
                         }}
                       >
                         <span style={{ fontSize: '16px' }}></span>
@@ -539,7 +539,7 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
                           });
                         }}
                         style={{
-                          background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                          background: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)',
                           color: 'white',
                           padding: '12px 24px',
                           border: 'none',
@@ -550,16 +550,16 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
                           display: 'flex',
                           alignItems: 'center',
                           gap: '8px',
-                          boxShadow: '0 4px 12px rgba(5, 150, 105, 0.3)',
+                          boxShadow: '0 4px 12px rgba(14, 165, 233, 0.3)',
                           transition: 'all 0.2s ease'
                         }}
                         onMouseOver={(e) => {
                           e.currentTarget.style.transform = 'translateY(-1px)';
-                          e.currentTarget.style.boxShadow = '0 6px 16px rgba(5, 150, 105, 0.4)';
+                          e.currentTarget.style.boxShadow = '0 6px 16px rgba(14, 165, 233, 0.4)';
                         }}
                         onMouseOut={(e) => {
                           e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(5, 150, 105, 0.3)';
+                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(14, 165, 233, 0.3)';
                         }}
                       >
                         <span style={{ fontSize: '16px' }}></span>
@@ -582,7 +582,7 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
                           });
                         }}
                         style={{
-                          background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
+                          background: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)',
                           color: 'white',
                           padding: '12px 24px',
                           border: 'none',
@@ -593,16 +593,16 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
                           display: 'flex',
                           alignItems: 'center',
                           gap: '8px',
-                          boxShadow: '0 4px 12px rgba(220, 38, 38, 0.3)',
+                          boxShadow: '0 4px 12px rgba(14, 165, 233, 0.3)',
                           transition: 'all 0.2s ease'
                         }}
                         onMouseOver={(e) => {
                           e.currentTarget.style.transform = 'translateY(-1px)';
-                          e.currentTarget.style.boxShadow = '0 6px 16px rgba(220, 38, 38, 0.4)';
+                          e.currentTarget.style.boxShadow = '0 6px 16px rgba(14, 165, 233, 0.4)';
                         }}
                         onMouseOut={(e) => {
                           e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(220, 38, 38, 0.3)';
+                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(14, 165, 233, 0.3)';
                         }}
                       >
                         <span style={{ fontSize: '16px' }}></span>
@@ -625,7 +625,7 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
                           });
                         }}
                         style={{
-                          background: 'linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)',
+                          background: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)',
                           color: 'white',
                           padding: '12px 24px',
                           border: 'none',
@@ -636,16 +636,16 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
                           display: 'flex',
                           alignItems: 'center',
                           gap: '8px',
-                          boxShadow: '0 4px 12px rgba(124, 58, 237, 0.3)',
+                          boxShadow: '0 4px 12px rgba(14, 165, 233, 0.3)',
                           transition: 'all 0.2s ease'
                         }}
                         onMouseOver={(e) => {
                           e.currentTarget.style.transform = 'translateY(-1px)';
-                          e.currentTarget.style.boxShadow = '0 6px 16px rgba(124, 58, 237, 0.4)';
+                          e.currentTarget.style.boxShadow = '0 6px 16px rgba(14, 165, 233, 0.4)';
                         }}
                         onMouseOut={(e) => {
                           e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(124, 58, 237, 0.3)';
+                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(14, 165, 233, 0.3)';
                         }}
                       >
                         <span style={{ fontSize: '16px' }}></span>
@@ -666,15 +666,17 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
             top: '20px',
             right: '20px',
             padding: '16px 20px',
-            borderRadius: '10px',
+            borderRadius: '16px',
             fontSize: '14px',
             fontWeight: '500',
-            backgroundColor: message.includes('✅') ? '#ecfdf5' : '#fef2f2',
-            color: message.includes('✅') ? '#065f46' : '#991b1b',
-            border: `1px solid ${message.includes('✅') ? '#a7f3d0' : '#fecaca'}`,
+            backgroundColor: message.includes('success') ? '#f0fdf4' : '#fef2f2',
+            color: message.includes('success') ? '#16a34a' : '#dc2626',
+            border: `1px solid ${message.includes('success') ? '#bbf7d0' : '#fecaca'}`,
             display: 'flex',
             alignItems: 'center',
-            gap: '8px'
+            gap: '8px',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+            backdropFilter: 'blur(20px)'
           }}>
             {message}
           </div>
