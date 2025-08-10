@@ -866,7 +866,7 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
                     </>
                   ) : (
                     <>
-                      Generate DME Order Form
+                      Submit DME Order Form
                     </>
                   )}
                 </button>

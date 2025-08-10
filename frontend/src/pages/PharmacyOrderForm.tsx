@@ -970,8 +970,7 @@ const PharmacyOrderForm: React.FC<PharmacyOrderFormProps> = () => {
                     </>
                   ) : (
                     <>
-                      <span style={{ fontSize: '18px' }}>💊</span>
-                      Generate Pharmacy Order Form
+                      Submit Pharmacy Order Form
                     </>
                   )}
                 </button>
