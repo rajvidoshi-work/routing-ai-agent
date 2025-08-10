@@ -36,20 +36,61 @@ const ForcedForm: React.FC = () => {
 
     try {
       const patient = patients.find(p => p.patient_id === selectedPatient);
+      
+      // Determine gender based on patient name (fallback)
+      const getGenderFromName = (name: string) => {
+        const femaleNames = ['Victoria', 'Sarah', 'Jennifer', 'Mary', 'Lisa'];
+        const firstName = name.split(' ')[0];
+        return femaleNames.includes(firstName) ? 'Female' : 'Male';
+      };
+      
       const patientData = {
+        // Basic Patient Information
         patient_id: patient.patient_id,
         name: patient.name,
-        primary_diagnosis: patient.primary_diagnosis,
+        date_of_birth: null,
+        gender: patient.gender || getGenderFromName(patient.name),
+        mrn: `MRN-${patient.patient_id}`,
+        address: patient.address || "123 Main Street, Anytown, ST 12345",
+        contact_number: patient.phone || "(555) 123-4567",
+        
+        // ICU Stay Information
+        icu_admission_date: null,
+        icu_discharge_date: null,
+        length_of_stay_days: 3,
+        
+        // Medical Information
         primary_icu_diagnosis: patient.primary_diagnosis,
-        age: 65,
-        gender: "Male",
-        admission_date: "2024-01-01",
-        expected_discharge_date: "2024-01-02",
-        skilled_nursing_needed: "Yes",
-        equipment_needed: "Hospital bed, IV pole",
-        medications: ["Heart medication"],
-        insurance_type: "Medicare",
-        discharge_destination: "Home"
+        secondary_diagnoses: patient.secondary_diagnoses || null,
+        allergies: patient.allergies || null,
+        
+        // Prescriber Information
+        prescriber_name: "Dr. Sherry Chung",
+        npi_number: "3662871596",
+        prescriber_contact: "(067) 318-5308",
+        
+        // Medication Information
+        medication: patient.medication || "Heart medication",
+        dosage: "As prescribed",
+        frequency: "Daily",
+        route: "Oral",
+        
+        // Discharge Planning
+        skilled_nursing_needed: patient.skilled_nursing_needed || "Yes",
+        equipment_needed: patient.equipment_needed || "Hospital bed, IV pole",
+        home_health_services: patient.home_health_services || "Nursing care",
+        discharge_destination: patient.discharge_destination || "Home",
+        
+        // Insurance Information
+        insurance_type: patient.insurance_type || "Medicare",
+        insurance_coverage_status: patient.insurance_coverage_status || "Active",
+        
+        // DME Information
+        dme_supplier: "Regional DME Services",
+        equipment_delivery_date: null,
+        
+        // Additional Information
+        special_instructions: "Patient requires careful monitoring during transition to home care"
       };
 
       const response = await fetch('http://localhost:8000/api/process-complete-case', {

@@ -23,11 +23,110 @@ const StateAuthorizationForm: React.FC<StateAuthorizationFormProps> = () => {
     // Get results and patient data from navigation state
     if (location.state && location.state.results && location.state.patientData) {
       setResults(location.state.results);
+      
+      // Auto-fill form with LLM-generated data based on patient information
+      const patientData = location.state.patientData;
+      autofillStateForm(patientData);
     } else {
       // If no data, redirect back to results page
       navigate('/results');
     }
   }, [location.state, navigate]);
+
+  // Function to autofill State form with LLM-generated realistic data
+  const autofillStateForm = async (patientData: any) => {
+    try {
+      // Make API call to get autofill data from backend
+      const requestData = {
+        patient_data: patientData,
+        caregiver_input: {
+          patient_id: patientData?.patient_id,
+          urgency_level: "medium",
+          primary_concern: "State authorization and insurance coverage needed for discharge planning",
+          requested_services: ['state'],
+          additional_notes: "Auto-generating state authorization form data"
+        }
+      };
+
+      const response = await fetch('http://localhost:8000/api/process-state-agent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestData)
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        
+        // Use the form_autofill data from backend if available
+        if (result.form_autofill) {
+          setStateForm(result.form_autofill);
+        } else {
+          // Fallback to sample data if backend doesn't provide autofill
+          setStateForm(getSampleStateInfo(patientData));
+        }
+      } else {
+        // Fallback to sample data if API call fails
+        setStateForm(getSampleStateInfo(patientData));
+      }
+    } catch (error) {
+      console.error('Error getting state autofill data:', error);
+      // Fallback to sample data
+      setStateForm(getSampleStateInfo(patientData));
+    }
+  };
+
+  // Fallback sample data function for state authorization
+  const getSampleStateInfo = (patientData: any) => {
+    return {
+      // Patient Information
+      patientName: patientData?.name || "Isaiah Oneal",
+      dateOfBirth: "1958-03-15",
+      ssn: "XXX-XX-1234",
+      mrn: patientData?.patient_id || "MRN-1003",
+      patientAddress: "13637 Thompson Cove Suite 621\nRonnieside, WI 90185",
+      phoneNumber: "(555) 234-5678",
+      email: "isaiah.oneal@email.com",
+      
+      // Insurance Information
+      primaryInsurance: "medicare",
+      insuranceId: "1EG4-TE5-MK72",
+      groupNumber: "12345",
+      secondaryInsurance: "Medicaid",
+      coverageStatus: "denied",
+      
+      // Medical Information
+      primaryDiagnosis: "I50.9 - Heart failure, unspecified",
+      secondaryDiagnoses: "E11.9 - Type 2 diabetes mellitus without complications",
+      admissionDate: "2024-01-15",
+      dischargeDate: new Date().toISOString().split('T')[0],
+      medicalNecessity: "Patient requires home health services and DME equipment for safe transition from hospital to home care following congestive heart failure exacerbation.",
+      
+      // Services Requested
+      serviceType: "home-health",
+      serviceDescription: "Home health nursing services for medication management, vital signs monitoring, and patient education. DME equipment including hospital bed and IV pole for safe home care.",
+      serviceFrequency: "3x per week",
+      serviceDuration: "30 days",
+      
+      // Provider Information
+      attendingPhysician: "Dr. Sherry Chung",
+      physicianNPI: "3662871596",
+      physicianPhone: "(067) 318-5308",
+      facilityName: "Regional Medical Center",
+      facilityAddress: "123 Medical Center Drive\nHealthcare City, ST 12345",
+      
+      // Authorization Details
+      authorizationType: "prior-authorization",
+      urgencyLevel: "urgent",
+      requestedStartDate: new Date().toISOString().split('T')[0],
+      requestedEndDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      previousAuthNumber: "",
+      clinicalJustification: "Patient with congestive heart failure requires continued medical supervision and support services to prevent readmission. Home health services are medically necessary for medication compliance, symptom monitoring, and patient safety.",
+      
+      // Original fields
+      concern: "Patient requires prior authorization for home health services and DME equipment. Current insurance coverage has been denied and needs appeal process initiated.",
+      notes: "Patient has complex medical history requiring specialized care coordination. Family support available but professional medical oversight necessary for safe discharge transition."
+    };
+  };
 
   // Handle State form submission
   const handleStateFormSubmit = async (e: React.FormEvent) => {
@@ -273,16 +372,524 @@ const StateAuthorizationForm: React.FC<StateAuthorizationFormProps> = () => {
 
             {!stateForm.submitted ? (
               <form onSubmit={handleStateFormSubmit}>
+                {/* Patient Information Section */}
+                <div style={{ 
+                  backgroundColor: '#f5f3ff', 
+                  padding: '20px', 
+                  borderRadius: '8px', 
+                  marginBottom: '24px',
+                  border: '1px solid #c4b5fd'
+                }}>
+                  <h4 style={{ 
+                    color: '#7c3aed', 
+                    marginBottom: '16px',
+                    fontSize: '16px',
+                    fontWeight: '600'
+                  }}>
+                    📝 Patient Information
+                  </h4>
+                  
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                    <div>
+                      <label style={labelStyle}>Patient Name *</label>
+                      <input
+                        type="text"
+                        value={stateForm.patientName || ''}
+                        onChange={(e) => updateStateForm('patientName', e.target.value)}
+                        required
+                        placeholder="Full patient name"
+                        style={inputStyle}
+                      />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Date of Birth *</label>
+                      <input
+                        type="date"
+                        value={stateForm.dateOfBirth || ''}
+                        onChange={(e) => updateStateForm('dateOfBirth', e.target.value)}
+                        required
+                        style={inputStyle}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                    <div>
+                      <label style={labelStyle}>Social Security Number</label>
+                      <input
+                        type="text"
+                        value={stateForm.ssn || ''}
+                        onChange={(e) => updateStateForm('ssn', e.target.value)}
+                        placeholder="XXX-XX-XXXX"
+                        style={inputStyle}
+                      />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Medical Record Number</label>
+                      <input
+                        type="text"
+                        value={stateForm.mrn || ''}
+                        onChange={(e) => updateStateForm('mrn', e.target.value)}
+                        placeholder="MRN"
+                        style={inputStyle}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ marginBottom: '16px' }}>
+                    <label style={labelStyle}>Patient Address *</label>
+                    <textarea
+                      value={stateForm.patientAddress || ''}
+                      onChange={(e) => updateStateForm('patientAddress', e.target.value)}
+                      required
+                      rows={2}
+                      placeholder="Full address including city, state, zip"
+                      style={{...inputStyle, minHeight: '60px', resize: 'vertical'}}
+                    />
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                    <div>
+                      <label style={labelStyle}>Phone Number</label>
+                      <input
+                        type="tel"
+                        value={stateForm.phoneNumber || ''}
+                        onChange={(e) => updateStateForm('phoneNumber', e.target.value)}
+                        placeholder="(555) 123-4567"
+                        style={inputStyle}
+                      />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Email Address</label>
+                      <input
+                        type="email"
+                        value={stateForm.email || ''}
+                        onChange={(e) => updateStateForm('email', e.target.value)}
+                        placeholder="patient@email.com"
+                        style={inputStyle}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Insurance Information Section */}
+                <div style={{ 
+                  backgroundColor: '#ecfdf5', 
+                  padding: '20px', 
+                  borderRadius: '8px', 
+                  marginBottom: '24px',
+                  border: '1px solid #a7f3d0'
+                }}>
+                  <h4 style={{ 
+                    color: '#059669', 
+                    marginBottom: '16px',
+                    fontSize: '16px',
+                    fontWeight: '600'
+                  }}>
+                    💳 Insurance Information
+                  </h4>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                    <div>
+                      <label style={labelStyle}>Primary Insurance *</label>
+                      <select
+                        value={stateForm.primaryInsurance || ''}
+                        onChange={(e) => updateStateForm('primaryInsurance', e.target.value)}
+                        required
+                        style={inputStyle}
+                      >
+                        <option value="">Select primary insurance</option>
+                        <option value="medicare">Medicare</option>
+                        <option value="medicaid">Medicaid</option>
+                        <option value="private">Private Insurance</option>
+                        <option value="tricare">TRICARE</option>
+                        <option value="va">VA Benefits</option>
+                        <option value="self-pay">Self-Pay</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Insurance ID Number</label>
+                      <input
+                        type="text"
+                        value={stateForm.insuranceId || ''}
+                        onChange={(e) => updateStateForm('insuranceId', e.target.value)}
+                        placeholder="Insurance ID number"
+                        style={inputStyle}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                    <div>
+                      <label style={labelStyle}>Group Number</label>
+                      <input
+                        type="text"
+                        value={stateForm.groupNumber || ''}
+                        onChange={(e) => updateStateForm('groupNumber', e.target.value)}
+                        placeholder="Group number"
+                        style={inputStyle}
+                      />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Secondary Insurance</label>
+                      <input
+                        type="text"
+                        value={stateForm.secondaryInsurance || ''}
+                        onChange={(e) => updateStateForm('secondaryInsurance', e.target.value)}
+                        placeholder="Secondary insurance (if any)"
+                        style={inputStyle}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ marginBottom: '16px' }}>
+                    <label style={labelStyle}>Current Coverage Status</label>
+                    <select
+                      value={stateForm.coverageStatus || ''}
+                      onChange={(e) => updateStateForm('coverageStatus', e.target.value)}
+                      style={inputStyle}
+                    >
+                      <option value="">Select status</option>
+                      <option value="active">Active</option>
+                      <option value="pending">Pending</option>
+                      <option value="denied">Denied</option>
+                      <option value="expired">Expired</option>
+                      <option value="suspended">Suspended</option>
+                      <option value="unknown">Unknown</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Medical Information Section */}
+                <div style={{ 
+                  backgroundColor: '#fef2f2', 
+                  padding: '20px', 
+                  borderRadius: '8px', 
+                  marginBottom: '24px',
+                  border: '1px solid #fecaca'
+                }}>
+                  <h4 style={{ 
+                    color: '#dc2626', 
+                    marginBottom: '16px',
+                    fontSize: '16px',
+                    fontWeight: '600'
+                  }}>
+                    🩺 Medical Information
+                  </h4>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                    <div>
+                      <label style={labelStyle}>Primary Diagnosis (ICD-10) *</label>
+                      <input
+                        type="text"
+                        value={stateForm.primaryDiagnosis || ''}
+                        onChange={(e) => updateStateForm('primaryDiagnosis', e.target.value)}
+                        required
+                        placeholder="e.g., I50.9 - Heart failure, unspecified"
+                        style={inputStyle}
+                      />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Secondary Diagnoses</label>
+                      <input
+                        type="text"
+                        value={stateForm.secondaryDiagnoses || ''}
+                        onChange={(e) => updateStateForm('secondaryDiagnoses', e.target.value)}
+                        placeholder="Additional ICD-10 codes"
+                        style={inputStyle}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                    <div>
+                      <label style={labelStyle}>Admission Date</label>
+                      <input
+                        type="date"
+                        value={stateForm.admissionDate || ''}
+                        onChange={(e) => updateStateForm('admissionDate', e.target.value)}
+                        style={inputStyle}
+                      />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Discharge Date</label>
+                      <input
+                        type="date"
+                        value={stateForm.dischargeDate || ''}
+                        onChange={(e) => updateStateForm('dischargeDate', e.target.value)}
+                        style={inputStyle}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ marginBottom: '16px' }}>
+                    <label style={labelStyle}>Medical Necessity Statement</label>
+                    <textarea
+                      value={stateForm.medicalNecessity || ''}
+                      onChange={(e) => updateStateForm('medicalNecessity', e.target.value)}
+                      rows={3}
+                      placeholder="Explain why the requested services are medically necessary..."
+                      style={{...inputStyle, minHeight: '90px', resize: 'vertical'}}
+                    />
+                  </div>
+                </div>
+
+                {/* Services Requested Section */}
+                <div style={{ 
+                  backgroundColor: '#f0f9ff', 
+                  padding: '20px', 
+                  borderRadius: '8px', 
+                  marginBottom: '24px',
+                  border: '1px solid #7dd3fc'
+                }}>
+                  <h4 style={{ 
+                    color: '#0369a1', 
+                    marginBottom: '16px',
+                    fontSize: '16px',
+                    fontWeight: '600'
+                  }}>
+                    🏥 Services Requested for Authorization
+                  </h4>
+
+                  <div style={{ marginBottom: '16px' }}>
+                    <label style={labelStyle}>Service Type *</label>
+                    <select
+                      value={stateForm.serviceType || ''}
+                      onChange={(e) => updateStateForm('serviceType', e.target.value)}
+                      required
+                      style={inputStyle}
+                    >
+                      <option value="">Select service type</option>
+                      <option value="home-health">Home Health Services</option>
+                      <option value="dme">Durable Medical Equipment</option>
+                      <option value="skilled-nursing">Skilled Nursing Facility</option>
+                      <option value="rehabilitation">Rehabilitation Services</option>
+                      <option value="hospice">Hospice Care</option>
+                      <option value="long-term-care">Long-Term Care</option>
+                      <option value="specialty-pharmacy">Specialty Pharmacy</option>
+                      <option value="transportation">Medical Transportation</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+
+                  <div style={{ marginBottom: '16px' }}>
+                    <label style={labelStyle}>Detailed Service Description *</label>
+                    <textarea
+                      value={stateForm.serviceDescription || ''}
+                      onChange={(e) => updateStateForm('serviceDescription', e.target.value)}
+                      required
+                      rows={3}
+                      placeholder="Provide detailed description of services requested..."
+                      style={{...inputStyle, minHeight: '90px', resize: 'vertical'}}
+                    />
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                    <div>
+                      <label style={labelStyle}>Frequency of Service</label>
+                      <input
+                        type="text"
+                        value={stateForm.serviceFrequency || ''}
+                        onChange={(e) => updateStateForm('serviceFrequency', e.target.value)}
+                        placeholder="e.g., 3x per week, daily"
+                        style={inputStyle}
+                      />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Duration of Service</label>
+                      <input
+                        type="text"
+                        value={stateForm.serviceDuration || ''}
+                        onChange={(e) => updateStateForm('serviceDuration', e.target.value)}
+                        placeholder="e.g., 30 days, 6 weeks"
+                        style={inputStyle}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Provider Information Section */}
+                <div style={{ 
+                  backgroundColor: '#fef3c7', 
+                  padding: '20px', 
+                  borderRadius: '8px', 
+                  marginBottom: '24px',
+                  border: '1px solid #fcd34d'
+                }}>
+                  <h4 style={{ 
+                    color: '#d97706', 
+                    marginBottom: '16px',
+                    fontSize: '16px',
+                    fontWeight: '600'
+                  }}>
+                    👨‍⚕️ Provider Information
+                  </h4>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                    <div>
+                      <label style={labelStyle}>Attending Physician *</label>
+                      <input
+                        type="text"
+                        value={stateForm.attendingPhysician || ''}
+                        onChange={(e) => updateStateForm('attendingPhysician', e.target.value)}
+                        required
+                        placeholder="Dr. Name"
+                        style={inputStyle}
+                      />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Physician NPI Number</label>
+                      <input
+                        type="text"
+                        value={stateForm.physicianNPI || ''}
+                        onChange={(e) => updateStateForm('physicianNPI', e.target.value)}
+                        placeholder="NPI number"
+                        style={inputStyle}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                    <div>
+                      <label style={labelStyle}>Physician Phone</label>
+                      <input
+                        type="tel"
+                        value={stateForm.physicianPhone || ''}
+                        onChange={(e) => updateStateForm('physicianPhone', e.target.value)}
+                        placeholder="Physician contact number"
+                        style={inputStyle}
+                      />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Hospital/Facility Name</label>
+                      <input
+                        type="text"
+                        value={stateForm.facilityName || ''}
+                        onChange={(e) => updateStateForm('facilityName', e.target.value)}
+                        placeholder="Hospital or facility name"
+                        style={inputStyle}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ marginBottom: '16px' }}>
+                    <label style={labelStyle}>Facility Address</label>
+                    <textarea
+                      value={stateForm.facilityAddress || ''}
+                      onChange={(e) => updateStateForm('facilityAddress', e.target.value)}
+                      rows={2}
+                      placeholder="Hospital/facility address"
+                      style={{...inputStyle, minHeight: '60px', resize: 'vertical'}}
+                    />
+                  </div>
+                </div>
+
+                {/* Authorization Details Section */}
+                <div style={{ 
+                  backgroundColor: '#fdf2f8', 
+                  padding: '20px', 
+                  borderRadius: '8px', 
+                  marginBottom: '24px',
+                  border: '1px solid #f9a8d4'
+                }}>
+                  <h4 style={{ 
+                    color: '#be185d', 
+                    marginBottom: '16px',
+                    fontSize: '16px',
+                    fontWeight: '600'
+                  }}>
+                    📋 Authorization Details
+                  </h4>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                    <div>
+                      <label style={labelStyle}>Authorization Type *</label>
+                      <select
+                        value={stateForm.authorizationType || ''}
+                        onChange={(e) => updateStateForm('authorizationType', e.target.value)}
+                        required
+                        style={inputStyle}
+                      >
+                        <option value="">Select authorization type</option>
+                        <option value="prior-authorization">Prior Authorization</option>
+                        <option value="pre-certification">Pre-Certification</option>
+                        <option value="concurrent-review">Concurrent Review</option>
+                        <option value="retrospective-review">Retrospective Review</option>
+                        <option value="emergency-authorization">Emergency Authorization</option>
+                        <option value="appeal">Appeal</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Urgency Level</label>
+                      <select
+                        value={stateForm.urgencyLevel || ''}
+                        onChange={(e) => updateStateForm('urgencyLevel', e.target.value)}
+                        style={inputStyle}
+                      >
+                        <option value="">Select urgency</option>
+                        <option value="routine">Routine</option>
+                        <option value="urgent">Urgent</option>
+                        <option value="emergent">Emergent</option>
+                        <option value="stat">STAT</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                    <div>
+                      <label style={labelStyle}>Requested Start Date</label>
+                      <input
+                        type="date"
+                        value={stateForm.requestedStartDate || ''}
+                        onChange={(e) => updateStateForm('requestedStartDate', e.target.value)}
+                        style={inputStyle}
+                      />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Requested End Date</label>
+                      <input
+                        type="date"
+                        value={stateForm.requestedEndDate || ''}
+                        onChange={(e) => updateStateForm('requestedEndDate', e.target.value)}
+                        style={inputStyle}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ marginBottom: '16px' }}>
+                    <label style={labelStyle}>Previous Authorization Number</label>
+                    <input
+                      type="text"
+                      value={stateForm.previousAuthNumber || ''}
+                      onChange={(e) => updateStateForm('previousAuthNumber', e.target.value)}
+                      placeholder="Previous authorization number (if applicable)"
+                      style={inputStyle}
+                    />
+                  </div>
+
+                  <div style={{ marginBottom: '16px' }}>
+                    <label style={labelStyle}>Clinical Justification</label>
+                    <textarea
+                      value={stateForm.clinicalJustification || ''}
+                      onChange={(e) => updateStateForm('clinicalJustification', e.target.value)}
+                      rows={4}
+                      placeholder="Provide clinical justification for the requested authorization..."
+                      style={{...inputStyle, minHeight: '120px', resize: 'vertical'}}
+                    />
+                  </div>
+                </div>
+
                 <div style={{ marginBottom: '24px' }}>
                   <label style={labelStyle}>
-                    Specific Insurance/Authorization Concern *
+                    Specific State Authorization Concern *
                   </label>
                   <textarea
                     value={stateForm.concern || ''}
                     onChange={(e) => updateStateForm('concern', e.target.value)}
                     required
                     rows={4}
-                    placeholder="Describe specific insurance authorization needs, coverage concerns, state program requirements, or Medicaid waiver applications for discharge planning..."
+                    placeholder="Describe specific insurance authorization needs, state program applications, coverage issues, or authorization concerns for discharge planning..."
                     style={{
                       ...inputStyle,
                       minHeight: '120px',
@@ -299,7 +906,7 @@ const StateAuthorizationForm: React.FC<StateAuthorizationFormProps> = () => {
                     value={stateForm.notes || ''}
                     onChange={(e) => updateStateForm('notes', e.target.value)}
                     rows={3}
-                    placeholder="Any additional information, prior authorization history, appeal status, state program eligibility details, or special circumstances..."
+                    placeholder="Any additional information, supporting documentation, special circumstances, or authorization details..."
                     style={{
                       ...inputStyle,
                       minHeight: '90px',

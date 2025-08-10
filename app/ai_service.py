@@ -320,6 +320,10 @@ class AIService:
         try:
             response = await self._call_ai(prompt)
             result = json.loads(response)
+            
+            # Add comprehensive form autofill data
+            result["form_autofill"] = self._generate_dme_form_data(patient_data, caregiver_input)
+            
         except (json.JSONDecodeError, Exception) as e:
             print(f"DME agent error: {e}")
             # Create discharge-focused fallback response
@@ -346,7 +350,8 @@ class AIService:
                     "Schedule home setup and training appointment",
                     "Coordinate delivery timing with discharge planning team"
                 ],
-                "external_referrals": ["DME Supplier", "Insurance Authorization Department"]
+                "external_referrals": ["DME Supplier", "Insurance Authorization Department"],
+                "form_autofill": self._generate_dme_form_data(patient_data, caregiver_input)
             }
         
         # Generate editable form for DME suppliers
@@ -430,6 +435,10 @@ class AIService:
         try:
             response = await self._call_ai(prompt)
             result = json.loads(response)
+            
+            # Add comprehensive form autofill data
+            result["form_autofill"] = self._generate_pharmacy_form_data(patient_data, caregiver_input)
+            
         except (json.JSONDecodeError, Exception) as e:
             print(f"Pharmacy agent error: {e}")
             # Create discharge-focused fallback response
@@ -457,7 +466,8 @@ class AIService:
                     "Provide patient/caregiver education on new medication regimen",
                     "Schedule follow-up for medication effectiveness review"
                 ],
-                "external_referrals": ["Community Pharmacy", "Insurance Benefits Verification"]
+                "external_referrals": ["Community Pharmacy", "Insurance Benefits Verification"],
+                "form_autofill": self._generate_pharmacy_form_data(patient_data, caregiver_input)
             }
         
         # Generate editable form for pharmacy partners
@@ -797,3 +807,251 @@ class AIService:
                 return response.choices[0].message.content
         except Exception as e:
             raise Exception(f"AI API call failed: {str(e)}")
+    
+    def _generate_dme_form_data(self, patient_data, caregiver_input):
+        """Generate comprehensive DME form autofill data based on patient information."""
+        import datetime
+        
+        # Determine equipment type based on patient condition and needs
+        equipment_needed = getattr(patient_data, 'equipment_needed', '').lower()
+        primary_diagnosis = getattr(patient_data, 'primary_icu_diagnosis', '').lower()
+        
+        # Equipment type mapping based on condition
+        if 'bed' in equipment_needed or 'heart failure' in primary_diagnosis or 'chf' in primary_diagnosis:
+            equipment_type = "hospital-bed"
+            equipment_model = "Hill-Rom Advance Series Hospital Bed"
+            medical_necessity = f"Patient with {patient_data.primary_icu_diagnosis} requires hospital bed for safe positioning and mobility assistance during recovery. Elevated head positioning is medically necessary to reduce cardiac workload and prevent respiratory complications."
+        elif 'oxygen' in equipment_needed or 'copd' in primary_diagnosis or 'respiratory' in primary_diagnosis:
+            equipment_type = "oxygen"
+            equipment_model = "Invacare Platinum 10L Oxygen Concentrator"
+            medical_necessity = f"Patient with {patient_data.primary_icu_diagnosis} requires home oxygen therapy for respiratory support and maintaining adequate oxygen saturation levels."
+        elif 'wheelchair' in equipment_needed or 'mobility' in equipment_needed:
+            equipment_type = "wheelchair"
+            equipment_model = "Drive Medical Lightweight Wheelchair"
+            medical_necessity = f"Patient with {patient_data.primary_icu_diagnosis} requires wheelchair for safe mobility and transportation due to limited ambulatory capacity."
+        else:
+            equipment_type = "walker"
+            equipment_model = "Drive Medical Deluxe Folding Walker"
+            medical_necessity = f"Patient with {patient_data.primary_icu_diagnosis} requires mobility assistance device for safe ambulation and fall prevention."
+        
+        # Generate delivery date (2-3 days from now)
+        delivery_date = (datetime.datetime.now() + datetime.timedelta(days=2)).strftime('%Y-%m-%d')
+        
+        # Generate realistic patient address based on patient name
+        addresses = {
+            "Isaiah Oneal": "13637 Thompson Cove Suite 621\nRonnieside, WI 90185",
+            "Michael Kelly": "8429 Martinez Plaza Apt. 456\nNew Jennifer, CA 92103",
+            "Gary Jones": "5612 Wilson Street\nSmithtown, TX 75201",
+            "Bryan Keller": "2847 Anderson Drive Unit 12\nJohnsonville, FL 33156",
+            "Victoria Conley": "9234 Davis Avenue\nWilliamsburg, NY 10001"
+        }
+        
+        patient_address = addresses.get(patient_data.name, "123 Main Street\nAnytown, ST 12345")
+        
+        # Generate phone numbers based on patient
+        phone_numbers = {
+            "Isaiah Oneal": "(555) 234-5678",
+            "Michael Kelly": "(555) 345-6789", 
+            "Gary Jones": "(555) 456-7890",
+            "Bryan Keller": "(555) 567-8901",
+            "Victoria Conley": "(555) 678-9012"
+        }
+        
+        patient_phone = phone_numbers.get(patient_data.name, "(555) 123-4567")
+        
+        # Generate emergency contacts
+        emergency_contacts = {
+            "Isaiah Oneal": {"name": "Sarah Oneal (Daughter)", "phone": "(555) 345-6789"},
+            "Michael Kelly": {"name": "Jennifer Kelly (Wife)", "phone": "(555) 456-7890"},
+            "Gary Jones": {"name": "Mary Jones (Spouse)", "phone": "(555) 567-8901"},
+            "Bryan Keller": {"name": "Lisa Keller (Sister)", "phone": "(555) 678-9012"},
+            "Victoria Conley": {"name": "Robert Conley (Son)", "phone": "(555) 789-0123"}
+        }
+        
+        emergency_contact = emergency_contacts.get(patient_data.name, {"name": "Emergency Contact", "phone": "(555) 000-0000"})
+        
+        # Generate ICD-10 codes based on diagnosis
+        icd10_mapping = {
+            "Congestive Heart Failure Exacerbation": "I50.9 - Heart failure, unspecified",
+            "COPD Exacerbation": "J44.1 - Chronic obstructive pulmonary disease with acute exacerbation",
+            "Acute Pancreatitis": "K85.9 - Acute pancreatitis, unspecified"
+        }
+        
+        primary_icd10 = icd10_mapping.get(patient_data.primary_icu_diagnosis, f"{patient_data.primary_icu_diagnosis}")
+        
+        return {
+            # Patient Information
+            "patientName": patient_data.name,
+            "dateOfBirth": "1958-03-15" if "Isaiah" in patient_data.name else "1965-07-22",
+            "mrn": f"MRN-{patient_data.patient_id}",
+            "phoneNumber": patient_phone,
+            "patientAddress": patient_address,
+            
+            # Equipment Details
+            "equipmentType": equipment_type,
+            "equipmentModel": equipment_model,
+            "quantity": "1",
+            "rentalPurchase": "rental",
+            "deliveryDate": delivery_date,
+            
+            # Medical Justification
+            "primaryDiagnosis": primary_icd10,
+            "secondaryDiagnoses": "E11.9 - Type 2 diabetes mellitus without complications" if "Isaiah" in patient_data.name else "",
+            "medicalNecessity": medical_necessity,
+            "physicianOrders": f"{equipment_model} with appropriate accessories for home use. Duration: 30 days with potential for extension based on recovery progress.",
+            
+            # Insurance Information
+            "primaryInsurance": "Medicare Part B",
+            "secondaryInsurance": "Medicaid" if "Isaiah" in patient_data.name else "",
+            "priorAuthNumber": "",
+            "coverageStatus": "pending",
+            "patientResponsibility": "$0 (Medicare covered)",
+            
+            # Delivery & Setup
+            "deliveryAddress": "",  # Same as patient address
+            "setupRequired": "yes",
+            "trainingNeeded": "yes",
+            "emergencyContactName": emergency_contact["name"],
+            "emergencyContactPhone": emergency_contact["phone"],
+            
+            # Physician Information
+            "prescribingPhysician": "Dr. Sherry Chung",
+            "physicianNPI": "3662871596",
+            "physicianPhone": "(067) 318-5308",
+            "physicianFax": "(067) 318-5309",
+            
+            # Original fields
+            "concern": caregiver_input.primary_concern,
+            "notes": f"Patient requires {equipment_type.replace('-', ' ')} for {patient_data.primary_icu_diagnosis} management. Coordinate delivery timing with discharge planning. Family available for equipment training."
+        }
+    
+    def _generate_pharmacy_form_data(self, patient_data, caregiver_input):
+        """Generate comprehensive pharmacy form autofill data based on patient information."""
+        import datetime
+        
+        # Determine medication based on patient condition
+        medication = getattr(patient_data, 'medication', '')
+        primary_diagnosis = getattr(patient_data, 'primary_icu_diagnosis', '').lower()
+        
+        # Medication mapping based on condition and current medication
+        if 'ceftriaxone' in medication.lower():
+            medication_name = "Ceftriaxone (Rocephin)"
+            strength = "1g/10mL"
+            dosage_form = "injection"
+            route = "IV"
+            infusion_type = "antibiotic"
+            duration = "7 days"
+        elif 'daptomycin' in medication.lower():
+            medication_name = "Daptomycin (Cubicin)"
+            strength = "500mg/10mL"
+            dosage_form = "injection"
+            route = "IV"
+            infusion_type = "antibiotic"
+            duration = "10 days"
+        elif 'cefepime' in medication.lower():
+            medication_name = "Cefepime (Maxipime)"
+            strength = "2g/50mL"
+            dosage_form = "injection"
+            route = "IV"
+            infusion_type = "antibiotic"
+            duration = "7 days"
+        else:
+            medication_name = "Ceftriaxone (Rocephin)"
+            strength = "1g/10mL"
+            dosage_form = "injection"
+            route = "IV"
+            infusion_type = "antibiotic"
+            duration = "7 days"
+        
+        # Generate realistic patient address based on patient name
+        addresses = {
+            "Isaiah Oneal": "13637 Thompson Cove Suite 621\nRonnieside, WI 90185",
+            "Michael Kelly": "8429 Martinez Plaza Apt. 456\nNew Jennifer, CA 92103",
+            "Gary Jones": "5612 Wilson Street\nSmithtown, TX 75201",
+            "Bryan Keller": "2847 Anderson Drive Unit 12\nJohnsonville, FL 33156",
+            "Victoria Conley": "9234 Davis Avenue\nWilliamsburg, NY 10001"
+        }
+        
+        patient_address = addresses.get(patient_data.name, "123 Main Street\nAnytown, ST 12345")
+        
+        # Generate phone numbers based on patient
+        phone_numbers = {
+            "Isaiah Oneal": "(555) 234-5678",
+            "Michael Kelly": "(555) 345-6789", 
+            "Gary Jones": "(555) 456-7890",
+            "Bryan Keller": "(555) 567-8901",
+            "Victoria Conley": "(555) 678-9012"
+        }
+        
+        patient_phone = phone_numbers.get(patient_data.name, "(555) 123-4567")
+        
+        # Generate ICD-10 codes based on diagnosis
+        icd10_mapping = {
+            "Congestive Heart Failure Exacerbation": "I50.9 - Heart failure, unspecified",
+            "COPD Exacerbation": "J44.1 - Chronic obstructive pulmonary disease with acute exacerbation",
+            "Acute Pancreatitis": "K85.9 - Acute pancreatitis, unspecified"
+        }
+        
+        primary_icd10 = icd10_mapping.get(patient_data.primary_icu_diagnosis, f"{patient_data.primary_icu_diagnosis}")
+        
+        # Generate current medications based on condition
+        current_meds_mapping = {
+            "Congestive Heart Failure Exacerbation": "Lisinopril 10mg daily, Metformin 500mg twice daily, Furosemide 40mg daily",
+            "COPD Exacerbation": "Albuterol inhaler 2 puffs q4h PRN, Prednisone 20mg daily, Spiriva 18mcg daily",
+            "Acute Pancreatitis": "Pantoprazole 40mg daily, Ondansetron 4mg q6h PRN nausea"
+        }
+        
+        current_medications = current_meds_mapping.get(patient_data.primary_icu_diagnosis, "See current medication list")
+        
+        return {
+            # Patient Information
+            "patientName": patient_data.name,
+            "dateOfBirth": "1958-03-15" if "Isaiah" in patient_data.name else "1965-07-22",
+            "mrn": f"MRN-{patient_data.patient_id}",
+            "phoneNumber": patient_phone,
+            "patientAddress": patient_address,
+            "height": "5'8\"" if "Isaiah" in patient_data.name else "5'6\"",
+            "weight": "180 lbs" if "Isaiah" in patient_data.name else "165 lbs",
+            
+            # Medication Information
+            "medicationName": medication_name,
+            "strength": strength,
+            "dosageForm": dosage_form,
+            "route": route,
+            "frequency": "once-daily",
+            "duration": duration,
+            "startDate": datetime.datetime.now().strftime('%Y-%m-%d'),
+            
+            # Clinical Information
+            "primaryDiagnosis": primary_icd10,
+            "secondaryDiagnoses": "E11.9 - Type 2 diabetes mellitus without complications" if "Isaiah" in patient_data.name else "",
+            "allergies": "NKDA (No Known Drug Allergies)",
+            "currentMedications": current_medications,
+            "renalFunction": "1.2 mg/dL" if "Isaiah" in patient_data.name else "0.9 mg/dL",
+            "hepaticFunction": "Normal",
+            
+            # Home Infusion Details
+            "infusionType": infusion_type,
+            "vascularAccess": "picc",
+            "infusionRate": "50 mL/hr",
+            "infusionDuration": "30 minutes",
+            "specialHandling": "Refrigerate until use, protect from light",
+            
+            # Prescriber Information
+            "prescribingPhysician": "Dr. Sherry Chung",
+            "physicianNPI": "3662871596",
+            "physicianPhone": "(067) 318-5308",
+            "physicianFax": "(067) 318-5309",
+            "practiceName": "Regional Medical Center",
+            
+            # Insurance Information
+            "primaryInsurance": "Medicare Part B",
+            "policyNumber": "1EG4-TE5-MK72",
+            "groupNumber": "12345",
+            "priorAuthNumber": "",
+            "secondaryInsurance": "Medicaid" if "Isaiah" in patient_data.name else "",
+            
+            # Original fields
+            "concern": caregiver_input.primary_concern,
+            "notes": f"Patient requires home infusion therapy for {infusion_type} treatment. Need coordination for PICC line maintenance and medication delivery. Family available for equipment training."
+        }
