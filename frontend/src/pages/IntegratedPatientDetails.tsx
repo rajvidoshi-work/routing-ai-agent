@@ -159,33 +159,6 @@ const IntegratedPatientDetails: React.FC<IntegratedPatientDetailsProps> = () => 
             <button className="print-btn">Print Summary</button>
           </div>
         </div>
-
-        {/* Patient Selection */}
-        {patients.length > 1 && (
-          <div className="details-grid">
-            <div className="details-section" style={{ gridColumn: '1 / -1' }}>
-              <h3>Select Patient</h3>
-              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                {patients.map((patient) => (
-                  <button
-                    key={patient.patient_id}
-                    onClick={() => handlePatientSelect(patient)}
-                    style={{
-                      padding: '8px 16px',
-                      borderRadius: '8px',
-                      border: selectedPatient.patient_id === patient.patient_id ? '2px solid #0ea5e9' : '2px solid #e2e8f0',
-                      background: selectedPatient.patient_id === patient.patient_id ? '#e0f2fe' : 'white',
-                      cursor: 'pointer',
-                      fontWeight: selectedPatient.patient_id === patient.patient_id ? '600' : '400'
-                    }}
-                  >
-                    {patient.name} ({patient.patient_id})
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
         
         <div className="details-grid">
           <div className="details-section">
