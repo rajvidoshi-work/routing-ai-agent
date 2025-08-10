@@ -241,31 +241,52 @@ async def process_complete_case(request: RoutingRequest):
         agent_responses = []
         
         for agent_type in routing_decision.recommended_agents:
-            if agent_type == AgentType.NURSING:
-                response = await ai_service.process_nursing_agent(
-                    patient_data, request.caregiver_input
-                )
-            elif agent_type == AgentType.DME:
-                response = await ai_service.process_dme_agent(
-                    patient_data, request.caregiver_input
-                )
-            elif agent_type == AgentType.PHARMACY:
-                response = await ai_service.process_pharmacy_agent(
-                    patient_data, request.caregiver_input
-                )
-            elif agent_type == AgentType.STATE:
-                response = await ai_service.process_state_agent(
-                    patient_data, request.caregiver_input
-                )
-            
-            agent_responses.append(response)
+            try:
+                response = None
+                
+                if agent_type == AgentType.NURSING:
+                    response = await ai_service.process_nursing_agent(
+                        patient_data, request.caregiver_input
+                    )
+                elif agent_type == AgentType.DME:
+                    response = await ai_service.process_dme_agent(
+                        patient_data, request.caregiver_input
+                    )
+                elif agent_type == AgentType.PHARMACY:
+                    response = await ai_service.process_pharmacy_agent(
+                        patient_data, request.caregiver_input
+                    )
+                elif agent_type == AgentType.STATE:
+                    response = await ai_service.process_state_agent(
+                        patient_data, request.caregiver_input
+                    )
+                else:
+                    # Handle unknown agent types
+                    print(f"⚠️ Unknown agent type: {agent_type}")
+                    continue
+                
+                if response:
+                    agent_responses.append(response)
+                else:
+                    print(f"⚠️ No response from {agent_type} agent")
+                    
+            except Exception as agent_error:
+                print(f"❌ Error processing {agent_type} agent: {str(agent_error)}")
+                # Continue processing other agents instead of failing completely
+                continue
         
         return {
             "routing_decision": routing_decision,
-            "agent_responses": agent_responses
+            "agent_responses": agent_responses,
+            "status": "success",
+            "processed_agents": len(agent_responses),
+            "total_recommended": len(routing_decision.recommended_agents)
         }
         
     except Exception as e:
+        print(f"❌ Complete case processing error: {str(e)}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Complete case processing failed: {str(e)}")
 
 @app.get("/api/sample-data")
