@@ -166,7 +166,6 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
           result,
           submitted: true
         }));
-        setMessage('DME order form processed successfully!');
       } else {
         setMessage('DME order form processing failed');
       }
@@ -372,70 +371,6 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
               }}>
                 DME (Durable Medical Equipment) Order Form
               </h2>
-              <p style={{
-                color: '#6b7280',
-                fontSize: '14px',
-                margin: '8px 0 0 0',
-                lineHeight: '1.5'
-              }}>
-                Complete this form to generate DME equipment orders based on the patient's discharge planning needs.
-              </p>
-              
-              {/* Autofill Indicator */}
-              <div style={{
-                backgroundColor: '#f0f9ff',
-                border: '1px solid #bae6fd',
-                borderRadius: '8px',
-                padding: '12px 16px',
-                marginTop: '16px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '20px' }}>🤖</span>
-                  <div>
-                    <div style={{ 
-                      color: '#0ea5e9', 
-                      fontSize: '14px', 
-                      fontWeight: '600' 
-                    }}>
-                      Form Auto-filled by AI
-                    </div>
-                    <div style={{ 
-                      color: '#0ea5e9', 
-                      fontSize: '12px' 
-                    }}>
-                      All fields have been populated based on patient data. You can edit any field as needed.
-                    </div>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const patientData = location.state?.patientData;
-                    autofillDMEForm(patientData);
-                    setMessage('Form regenerated with updated AI recommendations');
-                    setTimeout(() => setMessage(''), 3000);
-                  }}
-                  style={{
-                    backgroundColor: '#0ea5e9',
-                    color: 'white',
-                    padding: '6px 12px',
-                    border: 'none',
-                    borderRadius: '6px',
-                    fontSize: '12px',
-                    cursor: 'pointer',
-                    fontWeight: '500',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px'
-                  }}
-                >
-                  <span>🔄</span>
-                  Regenerate
-                </button>
-              </div>
             </div>
 
             {!dmeForm.submitted ? (
@@ -917,8 +852,6 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
                 </div>
               </div>
             )}
-
-            {message && <div style={messageStyle}>{message}</div>}
           </div>
         </div>
       </div>
