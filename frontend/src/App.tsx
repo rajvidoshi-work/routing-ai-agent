@@ -5,6 +5,8 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import './App.css';
 
 import Navbar from './components/Navbar';
+import IntegratedPatientDetails from './pages/IntegratedPatientDetails';
+import EnhancedDashboard from './pages/EnhancedDashboard';
 import ForcedForm from './pages/ForcedForm';
 import ResultsPage from './pages/ResultsPage';
 import NursingOrderForm from './pages/NursingOrderForm';
@@ -19,7 +21,9 @@ function App() {
       <div className="App">
         <Navbar />
         <Routes>
-          <Route path="/" element={<ForcedForm />} />
+          <Route path="/" element={<IntegratedPatientDetails />} />
+          <Route path="/dashboard" element={<EnhancedDashboard />} />
+          <Route path="/original-dashboard" element={<ForcedForm />} />
           <Route path="/results" element={<ResultsPage />} />
           <Route path="/nursing-order" element={<NursingOrderForm />} />
           <Route path="/dme-order" element={<DMEOrderForm />} />
