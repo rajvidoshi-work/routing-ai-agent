@@ -133,7 +133,7 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
     e.preventDefault();
     
     if (!dmeForm.concern) {
-      setMessage('❌ Please fill in the concern field.');
+      setMessage('Please fill in the concern field.');
       return;
     }
 
@@ -166,12 +166,12 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
           result,
           submitted: true
         }));
-        setMessage('✅ DME order form processed successfully!');
+        setMessage('DME order form processed successfully!');
       } else {
-        setMessage('❌ DME order form processing failed');
+        setMessage('DME order form processing failed');
       }
     } catch (err) {
-      setMessage('❌ Error processing DME order form');
+      setMessage('Error processing DME order form');
     } finally {
       setLoading(false);
     }
@@ -184,24 +184,26 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
     }));
   };
 
-  // Styles
+  // Styles - Updated to match professional design
   const containerStyle: React.CSSProperties = {
     minHeight: '100vh',
-    backgroundColor: '#f8fafc',
-    fontFamily: '"Inter", "Segoe UI", "Roboto", sans-serif'
+    background: 'linear-gradient(135deg, #e8f4fd 0%, #f0f9ff 100%)',
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif'
   };
 
   const headerStyle: React.CSSProperties = {
-    background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+    background: 'rgba(255, 255, 255, 0.95)',
+    backdropFilter: 'blur(20px)',
+    borderBottom: '1px solid rgba(14, 165, 233, 0.1)',
     padding: '24px 32px',
-    color: 'white',
     marginBottom: '32px'
   };
 
   const titleStyle: React.CSSProperties = {
-    fontSize: '28px',
+    fontSize: '32px',
     fontWeight: '700',
     margin: '0',
+    color: '#1e293b',
     letterSpacing: '-0.5px',
     display: 'flex',
     alignItems: 'center',
@@ -215,63 +217,66 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
   };
 
   const backButtonStyle: React.CSSProperties = {
-    background: 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)',
-    color: 'white',
-    padding: '12px 24px',
-    border: 'none',
-    borderRadius: '8px',
+    background: 'transparent',
+    border: '2px solid #0ea5e9',
+    color: '#0ea5e9',
+    padding: '8px 16px',
+    borderRadius: '12px',
     fontSize: '14px',
     cursor: 'pointer',
     fontWeight: '600',
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
-    marginBottom: '24px'
+    marginBottom: '24px',
+    transition: 'all 0.3s ease'
   };
 
   const formCardStyle: React.CSSProperties = {
-    backgroundColor: 'white',
+    background: 'rgba(255, 255, 255, 0.95)',
+    backdropFilter: 'blur(20px)',
     padding: '32px',
-    borderRadius: '12px',
-    border: '1px solid #e5e7eb',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
+    borderRadius: '20px',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
   };
 
   const labelStyle: React.CSSProperties = {
     display: 'block',
     marginBottom: '8px',
     fontWeight: '600',
-    color: '#374151',
+    color: '#475569',
     fontSize: '14px',
-    letterSpacing: '0.025em'
+    textTransform: 'uppercase',
+    letterSpacing: '0.5px'
   };
 
   const inputStyle: React.CSSProperties = {
     width: '100%',
-    padding: '14px 16px',
-    border: '2px solid #e5e7eb',
-    borderRadius: '8px',
+    padding: '16px 20px',
+    border: '2px solid #f1f5f9',
+    borderRadius: '16px',
     fontSize: '16px',
     boxSizing: 'border-box',
     fontFamily: 'inherit',
-    backgroundColor: '#ffffff',
-    transition: 'border-color 0.2s ease'
+    background: '#f8fafc',
+    transition: 'all 0.3s ease'
   };
 
   const buttonStyle: React.CSSProperties = {
     background: loading ? 
       'linear-gradient(135deg, #9ca3af 0%, #6b7280 100%)' : 
-      'linear-gradient(135deg, #059669 0%, #047857 100%)',
+      'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)',
     color: 'white',
     padding: '16px 32px',
     border: 'none',
-    borderRadius: '10px',
+    borderRadius: '16px',
     fontSize: '16px',
     cursor: loading ? 'not-allowed' : 'pointer',
     fontWeight: '600',
     letterSpacing: '0.025em',
-    boxShadow: loading ? 'none' : '0 4px 12px rgba(5, 150, 105, 0.3)',
-    transition: 'all 0.2s ease',
+    boxShadow: loading ? 'none' : '0 8px 32px rgba(14, 165, 233, 0.3)',
+    transition: 'all 0.3s ease',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -282,22 +287,26 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
   const messageStyle: React.CSSProperties = {
     marginTop: '20px',
     padding: '16px 20px',
-    borderRadius: '10px',
+    borderRadius: '16px',
     fontSize: '14px',
     fontWeight: '500',
-    backgroundColor: message.includes('✅') ? '#ecfdf5' : '#fef2f2',
-    color: message.includes('✅') ? '#065f46' : '#991b1b',
-    border: `1px solid ${message.includes('✅') ? '#a7f3d0' : '#fecaca'}`,
+    backgroundColor: message.includes('success') ? '#f0fdf4' : '#fef2f2',
+    color: message.includes('success') ? '#16a34a' : '#dc2626',
+    border: `1px solid ${message.includes('success') ? '#bbf7d0' : '#fecaca'}`,
     display: 'flex',
     alignItems: 'center',
-    gap: '8px'
+    gap: '8px',
+    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+    backdropFilter: 'blur(20px)'
   };
 
   const resultCardStyle: React.CSSProperties = {
-    backgroundColor: '#f8fafc',
+    background: 'rgba(255, 255, 255, 0.95)',
+    backdropFilter: 'blur(20px)',
     padding: '24px',
-    borderRadius: '10px',
-    border: '1px solid #e2e8f0',
+    borderRadius: '16px',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
     marginTop: '24px'
   };
 
@@ -329,7 +338,6 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
         <div style={headerStyle}>
           <div style={{ maxWidth: '800px', margin: '0 auto' }}>
             <h1 style={titleStyle}>
-              <span style={{ fontSize: '32px' }}>🏥</span>
               DME Order Form
             </h1>
           </div>
@@ -349,12 +357,12 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
           {/* DME Form Card */}
           <div style={formCardStyle}>
             <div style={{
-              borderBottom: '2px solid #e5e7eb',
+              borderBottom: '2px solid #f1f5f9',
               paddingBottom: '16px',
               marginBottom: '24px'
             }}>
               <h2 style={{
-                color: '#059669',
+                color: '#0ea5e9',
                 fontSize: '20px',
                 fontWeight: '600',
                 margin: '0',
@@ -362,7 +370,6 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
                 alignItems: 'center',
                 gap: '10px'
               }}>
-                <span style={{ fontSize: '24px' }}>🏥</span>
                 DME (Durable Medical Equipment) Order Form
               </h2>
               <p style={{
@@ -376,8 +383,8 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
               
               {/* Autofill Indicator */}
               <div style={{
-                backgroundColor: '#ecfdf5',
-                border: '1px solid #a7f3d0',
+                backgroundColor: '#f0f9ff',
+                border: '1px solid #bae6fd',
                 borderRadius: '8px',
                 padding: '12px 16px',
                 marginTop: '16px',
@@ -389,14 +396,14 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
                   <span style={{ fontSize: '20px' }}>🤖</span>
                   <div>
                     <div style={{ 
-                      color: '#065f46', 
+                      color: '#16a34a', 
                       fontSize: '14px', 
                       fontWeight: '600' 
                     }}>
                       Form Auto-filled by AI
                     </div>
                     <div style={{ 
-                      color: '#047857', 
+                      color: '#0ea5e9', 
                       fontSize: '12px' 
                     }}>
                       All fields have been populated based on patient data. You can edit any field as needed.
@@ -408,11 +415,11 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
                   onClick={() => {
                     const patientData = location.state?.patientData;
                     autofillDMEForm(patientData);
-                    setMessage('✅ Form regenerated with updated AI recommendations');
+                    setMessage('Form regenerated with updated AI recommendations');
                     setTimeout(() => setMessage(''), 3000);
                   }}
                   style={{
-                    backgroundColor: '#059669',
+                    backgroundColor: '#0ea5e9',
                     color: 'white',
                     padding: '6px 12px',
                     border: 'none',
@@ -439,15 +446,15 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
                   padding: '20px', 
                   borderRadius: '8px', 
                   marginBottom: '24px',
-                  border: '1px solid #e2e8f0'
+                  border: '1px solid #f1f5f9'
                 }}>
                   <h4 style={{ 
-                    color: '#059669', 
+                    color: '#0ea5e9', 
                     marginBottom: '16px',
                     fontSize: '16px',
                     fontWeight: '600'
                   }}>
-                    📝 Patient Information
+                    Patient Information
                   </h4>
                   
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
@@ -519,12 +526,12 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
                   border: '1px solid #bbf7d0'
                 }}>
                   <h4 style={{ 
-                    color: '#059669', 
+                    color: '#0ea5e9', 
                     marginBottom: '16px',
                     fontSize: '16px',
                     fontWeight: '600'
                   }}>
-                    🏥 Equipment Details
+                    Equipment Details
                   </h4>
 
                   <div style={{ marginBottom: '16px' }}>
@@ -600,14 +607,14 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
 
                 {/* Medical Justification Section */}
                 <div style={{ 
-                  backgroundColor: '#fef3c7', 
+                  backgroundColor: '#f0f9ff', 
                   padding: '20px', 
                   borderRadius: '8px', 
                   marginBottom: '24px',
-                  border: '1px solid #fcd34d'
+                  border: '1px solid #bae6fd'
                 }}>
                   <h4 style={{ 
-                    color: '#d97706', 
+                    color: '#0ea5e9', 
                     marginBottom: '16px',
                     fontSize: '16px',
                     fontWeight: '600'
@@ -700,14 +707,14 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
 
                 {/* Insurance & Authorization Section */}
                 <div style={{ 
-                  backgroundColor: '#fdf2f8', 
+                  backgroundColor: '#f0f9ff', 
                   padding: '20px', 
                   borderRadius: '8px', 
                   marginBottom: '24px',
-                  border: '1px solid #f9a8d4'
+                  border: '1px solid #bae6fd'
                 }}>
                   <h4 style={{ 
-                    color: '#be185d', 
+                    color: '#0ea5e9', 
                     marginBottom: '16px',
                     fontSize: '16px',
                     fontWeight: '600'
@@ -784,10 +791,10 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
                   padding: '20px', 
                   borderRadius: '8px', 
                   marginBottom: '24px',
-                  border: '1px solid #7dd3fc'
+                  border: '1px solid #bae6fd'
                 }}>
                   <h4 style={{ 
-                    color: '#0369a1', 
+                    color: '#0ea5e9', 
                     marginBottom: '16px',
                     fontSize: '16px',
                     fontWeight: '600'
@@ -861,14 +868,14 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
 
                 {/* Physician Information Section */}
                 <div style={{ 
-                  backgroundColor: '#f5f3ff', 
+                  backgroundColor: '#f0f9ff', 
                   padding: '20px', 
                   borderRadius: '8px', 
                   marginBottom: '24px',
-                  border: '1px solid #c4b5fd'
+                  border: '1px solid #bae6fd'
                 }}>
                   <h4 style={{ 
-                    color: '#7c3aed', 
+                    color: '#0ea5e9', 
                     marginBottom: '16px',
                     fontSize: '16px',
                     fontWeight: '600'
@@ -939,7 +946,6 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
                     </>
                   ) : (
                     <>
-                      <span style={{ fontSize: '18px' }}>🏥</span>
                       Generate DME Order Form
                     </>
                   )}
@@ -948,19 +954,18 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
             ) : (
               <div>
                 <div style={{
-                  backgroundColor: '#ecfdf5',
-                  color: '#065f46',
+                  backgroundColor: '#f0f9ff',
+                  color: '#16a34a',
                   padding: '20px',
                   borderRadius: '10px',
                   marginBottom: '24px',
-                  border: '1px solid #a7f3d0',
+                  border: '1px solid #bae6fd',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '10px',
                   fontSize: '16px',
                   fontWeight: '600'
                 }}>
-                  <span style={{ fontSize: '24px' }}>✅</span>
                   DME Order Form Generated Successfully!
                 </div>
 
@@ -968,7 +973,7 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
                 {dmeForm.result && (
                   <div style={resultCardStyle}>
                     <h3 style={{ 
-                      color: '#059669', 
+                      color: '#0ea5e9', 
                       marginBottom: '20px',
                       fontSize: '18px',
                       fontWeight: '600',
@@ -976,7 +981,6 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
                       alignItems: 'center',
                       gap: '8px'
                     }}>
-                      <span style={{ fontSize: '20px' }}>🏥</span>
                       DME Equipment Recommendations
                     </h3>
                     
@@ -985,7 +989,7 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
                         <div style={{ 
                           fontSize: '14px', 
                           fontWeight: '600', 
-                          color: '#374151',
+                          color: '#475569',
                           marginBottom: '10px'
                         }}>
                           Equipment Recommendations:
@@ -996,14 +1000,14 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
                               marginBottom: '8px',
                               fontSize: '14px',
                               lineHeight: '1.6',
-                              color: '#4b5563',
+                              color: '#475569',
                               position: 'relative',
                               paddingLeft: '20px'
                             }}>
                               <span style={{ 
                                 position: 'absolute', 
                                 left: '0', 
-                                color: '#059669',
+                                color: '#0ea5e9',
                                 fontWeight: '600'
                               }}>•</span>
                               {rec}
@@ -1018,7 +1022,7 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
                         <div style={{ 
                           fontSize: '14px', 
                           fontWeight: '600', 
-                          color: '#374151',
+                          color: '#475569',
                           marginBottom: '10px'
                         }}>
                           Next Steps:
@@ -1029,14 +1033,14 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
                               marginBottom: '8px',
                               fontSize: '14px',
                               lineHeight: '1.6',
-                              color: '#4b5563',
+                              color: '#475569',
                               position: 'relative',
                               paddingLeft: '20px'
                             }}>
                               <span style={{ 
                                 position: 'absolute', 
                                 left: '0', 
-                                color: '#f59e0b',
+                                color: '#0ea5e9',
                                 fontWeight: '600'
                               }}>•</span>
                               {step}
@@ -1051,7 +1055,7 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
                         <div style={{ 
                           fontSize: '14px', 
                           fontWeight: '600', 
-                          color: '#374151',
+                          color: '#475569',
                           marginBottom: '10px'
                         }}>
                           External Referrals:
@@ -1062,7 +1066,7 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
                               marginBottom: '8px',
                               fontSize: '14px',
                               lineHeight: '1.6',
-                              color: '#4b5563',
+                              color: '#475569',
                               position: 'relative',
                               paddingLeft: '20px'
                             }}>
@@ -1109,7 +1113,7 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
                           alert('Print/Export functionality - Coming Soon!\n\nThis will allow you to print or export the DME order form.');
                         }}
                         style={{
-                          backgroundColor: '#059669',
+                          backgroundColor: '#0ea5e9',
                           color: 'white',
                           padding: '10px 20px',
                           border: 'none',
