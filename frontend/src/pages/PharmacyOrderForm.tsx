@@ -386,62 +386,6 @@ const PharmacyOrderForm: React.FC<PharmacyOrderFormProps> = () => {
               }}>
                 Complete this form to generate pharmacy orders and medication management based on the patient's discharge planning needs.
               </p>
-              
-              {/* Autofill Indicator */}
-              <div style={{
-                backgroundColor: '#f8fafc',
-                border: '1px solid #f1f5f9',
-                borderRadius: '8px',
-                padding: '12px 16px',
-                marginTop: '16px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '20px' }}>🤖</span>
-                  <div>
-                    <div style={{ 
-                      color: '#0284c7', 
-                      fontSize: '14px', 
-                      fontWeight: '600' 
-                    }}>
-                      Form Auto-filled by AI
-                    </div>
-                    <div style={{ 
-                      color: '#0ea5e9', 
-                      fontSize: '12px' 
-                    }}>
-                      All fields have been populated based on patient data. You can edit any field as needed.
-                    </div>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const patientData = location.state?.patientData;
-                    autofillPharmacyForm(patientData);
-                    setMessage('✅ Form regenerated with updated AI recommendations');
-                    setTimeout(() => setMessage(''), 3000);
-                  }}
-                  style={{
-                    backgroundColor: '#0ea5e9',
-                    color: 'white',
-                    padding: '6px 12px',
-                    border: 'none',
-                    borderRadius: '8px',
-                    fontSize: '12px',
-                    cursor: 'pointer',
-                    fontWeight: '500',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px'
-                  }}
-                >
-                  <span>🔄</span>
-                  Regenerate
-                </button>
-              </div>
             </div>
 
             {!pharmacyForm.submitted ? (
@@ -1021,8 +965,6 @@ const PharmacyOrderForm: React.FC<PharmacyOrderFormProps> = () => {
                 </div>
               </div>
             )}
-
-            {message && <div style={messageStyle}>{message}</div>}
           </div>
         </div>
       </div>
