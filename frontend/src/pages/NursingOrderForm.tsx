@@ -406,7 +406,7 @@ const NursingOrderForm: React.FC<NursingOrderFormProps> = () => {
                       )}
                     </div>
                     
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', fontSize: '13px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', fontSize: '13px', marginBottom: '16px' }}>
                       <div>
                         <strong style={{ color: '#0ea5e9' }}>Specialties:</strong>
                         <p style={{ margin: '2px 0', color: '#64748b' }}>
@@ -432,6 +432,39 @@ const NursingOrderForm: React.FC<NursingOrderFormProps> = () => {
                         </p>
                       </div>
                     </div>
+                    
+                    {/* Select Button */}
+                    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                      <button
+                        onClick={() => {
+                          // Handle nurse selection
+                          console.log('Selected nurse:', rec.nurse.name);
+                          // You can add more selection logic here
+                        }}
+                        style={{
+                          background: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)',
+                          color: 'white',
+                          padding: '8px 20px',
+                          border: 'none',
+                          borderRadius: '12px',
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          cursor: 'pointer',
+                          boxShadow: '0 2px 8px rgba(14, 165, 233, 0.3)',
+                          transition: 'all 0.2s ease'
+                        }}
+                        onMouseOver={(e) => {
+                          e.currentTarget.style.transform = 'translateY(-1px)';
+                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(14, 165, 233, 0.4)';
+                        }}
+                        onMouseOut={(e) => {
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(14, 165, 233, 0.3)';
+                        }}
+                      >
+                        Select
+                      </button>
+                    </div>
                   </div>
                 ))}
                 
@@ -454,41 +487,7 @@ const NursingOrderForm: React.FC<NursingOrderFormProps> = () => {
               </div>
             )}
 
-            {!nursingForm.submitted ? (
-              <form onSubmit={handleNursingFormSubmit}>
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  disabled={loading}
-                  style={buttonStyle}
-                >
-                  {loading ? (
-                    <>
-                      <div style={{
-                        width: '20px',
-                        height: '20px',
-                        border: '2px solid #ffffff',
-                        borderTop: '2px solid transparent',
-                        borderRadius: '50%',
-                        animation: 'spin 1s linear infinite'
-                      }}></div>
-                      Processing...
-                    </>
-                  ) : (
-                    <>
-                      <span>📋</span>
-                      Submit Nursing Order Form
-                    </>
-                  )}
-                </button>
-
-                {message && (
-                  <div style={messageStyle}>
-                    {message}
-                  </div>
-                )}
-              </form>
-            ) : (
+            {nursingForm.submitted && (
               <div>
                 <div style={{
                   backgroundColor: '#f0fdf4',

@@ -359,7 +359,11 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
                        response.agent_type === 'pharmacy' ? '' :
                        response.agent_type === 'state' ? '' : ''}
                     </span>
-                    {response.agent_type || `Agent ${index + 1}`}
+                    {(response.agent_type === 'nursing' ? 'Nursing' : 
+                      response.agent_type === 'dme' ? 'DME Equipments' : 
+                      response.agent_type === 'pharmacy' ? 'Pharmacy' :
+                      response.agent_type === 'state' ? 'State Resources' :
+                      response.agent_type) || `Agent ${index + 1}`}
                   </h4>
                   
                   {response.recommendations && (
@@ -520,7 +524,7 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
                         }}
                       >
                         <span style={{ fontSize: '16px' }}></span>
-                        Create Order Form
+                        View Nurse Recommendations
                       </button>
                     </div>
                   )}
