@@ -194,7 +194,7 @@ const NursingOrderForm: React.FC<NursingOrderFormProps> = () => {
     width: '100%',
     padding: '16px 20px',
     border: '2px solid #f1f5f9',
-    borderRadius: '8px',
+    borderRadius: '16px',
     fontSize: '16px',
     boxSizing: 'border-box',
     fontFamily: 'inherit',
@@ -229,14 +229,24 @@ const NursingOrderForm: React.FC<NursingOrderFormProps> = () => {
     borderRadius: '16px',
     fontSize: '14px',
     fontWeight: '500',
-    backgroundColor: message.includes('✅') ? '#f0fdf4' : '#fef2f2',
-    color: message.includes('✅') ? '#16a34a' : '#dc2626',
-    border: `1px solid ${message.includes('✅') ? '#bbf7d0' : '#fecaca'}`,
+    backgroundColor: message.includes('success') ? '#f0fdf4' : '#fef2f2',
+    color: message.includes('success') ? '#16a34a' : '#dc2626',
+    border: `1px solid ${message.includes('success') ? '#bbf7d0' : '#fecaca'}`,
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
     boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
     backdropFilter: 'blur(20px)'
+  };
+
+  const resultCardStyle: React.CSSProperties = {
+    background: 'rgba(255, 255, 255, 0.95)',
+    backdropFilter: 'blur(20px)',
+    padding: '24px',
+    borderRadius: '16px',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+    marginTop: '24px'
   };
 
   if (!results) {
@@ -313,15 +323,9 @@ const NursingOrderForm: React.FC<NursingOrderFormProps> = () => {
 
             {/* Nurse Recommendations Section */}
             {nurseRecommendations && nurseRecommendations.success && nurseRecommendations.recommendations.length > 0 && (
-              <div style={{ 
-                backgroundColor: '#f0fdf4', 
-                padding: '20px', 
-                borderRadius: '8px', 
-                marginBottom: '24px',
-                border: '1px solid #bbf7d0'
-              }}>
+              <div style={resultCardStyle}>
                 <h3 style={{ 
-                  color: '#16a34a', 
+                  color: '#0ea5e9', 
                   marginBottom: '16px',
                   fontSize: '18px',
                   fontWeight: '600',
@@ -332,7 +336,7 @@ const NursingOrderForm: React.FC<NursingOrderFormProps> = () => {
                   🤖 AI-Recommended Nurses
                 </h3>
                 <p style={{
-                  color: '#15803d',
+                  color: '#0284c7',
                   fontSize: '14px',
                   marginBottom: '16px'
                 }}>
@@ -342,8 +346,8 @@ const NursingOrderForm: React.FC<NursingOrderFormProps> = () => {
                 {nurseRecommendations.recommendations.map((rec: any, index: number) => (
                   <div key={rec.nurse.nurse_id} style={{
                     backgroundColor: 'white',
-                    border: '1px solid #d1fae5',
-                    borderRadius: '8px',
+                    border: '1px solid #bae6fd',
+                    borderRadius: '16px',
                     padding: '16px',
                     marginBottom: '12px',
                     boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
@@ -367,7 +371,7 @@ const NursingOrderForm: React.FC<NursingOrderFormProps> = () => {
                         </p>
                       </div>
                       <div style={{
-                        backgroundColor: '#16a34a',
+                        backgroundColor: '#0ea5e9',
                         color: 'white',
                         padding: '4px 12px',
                         borderRadius: '12px',
@@ -390,7 +394,7 @@ const NursingOrderForm: React.FC<NursingOrderFormProps> = () => {
                       
                       {rec.key_strengths && rec.key_strengths.length > 0 && (
                         <div style={{ marginBottom: '8px' }}>
-                          <strong style={{ color: '#16a34a', fontSize: '14px' }}>Key Strengths:</strong>
+                          <strong style={{ color: '#0ea5e9', fontSize: '14px' }}>Key Strengths:</strong>
                           <ul style={{ margin: '4px 0 0 20px', padding: '0' }}>
                             {rec.key_strengths.map((strength: string, i: number) => (
                               <li key={i} style={{ color: '#374151', fontSize: '13px', marginBottom: '2px' }}>
@@ -428,32 +432,13 @@ const NursingOrderForm: React.FC<NursingOrderFormProps> = () => {
                         </p>
                       </div>
                     </div>
-                    
-                    {rec.potential_concerns && rec.potential_concerns.length > 0 && (
-                      <div style={{ 
-                        marginTop: '12px', 
-                        padding: '8px 12px', 
-                        backgroundColor: '#fef3c7', 
-                        borderRadius: '6px',
-                        border: '1px solid #fcd34d'
-                      }}>
-                        <strong style={{ color: '#d97706', fontSize: '13px' }}>Considerations:</strong>
-                        <ul style={{ margin: '4px 0 0 16px', padding: '0' }}>
-                          {rec.potential_concerns.map((concern: string, i: number) => (
-                            <li key={i} style={{ color: '#92400e', fontSize: '12px', marginBottom: '2px' }}>
-                              {concern}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
                   </div>
                 ))}
                 
                 <div style={{
                   backgroundColor: '#e0f2fe',
                   padding: '12px',
-                  borderRadius: '6px',
+                  borderRadius: '12px',
                   marginTop: '16px'
                 }}>
                   <p style={{
@@ -522,12 +507,7 @@ const NursingOrderForm: React.FC<NursingOrderFormProps> = () => {
                   Nursing Order Form Submitted Successfully!
                 </div>
 
-                <div style={{
-                  backgroundColor: '#f8fafc',
-                  padding: '20px',
-                  borderRadius: '8px',
-                  border: '1px solid #f1f5f9'
-                }}>
+                <div style={resultCardStyle}>
                   <h3 style={{
                     color: '#1e293b',
                     fontSize: '18px',

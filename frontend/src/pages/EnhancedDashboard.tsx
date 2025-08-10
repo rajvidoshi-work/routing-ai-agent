@@ -30,7 +30,6 @@ const EnhancedDashboard: React.FC = () => {
       const prefilledPatient = location.state.prefilledPatient;
       setPrefilledData(prefilledPatient);
       setSelectedPatient(prefilledPatient.patient_id);
-      setMessage('Patient data loaded from Patient Details. Please enter your primary concern below.');
     }
 
     // Load patients from API
@@ -190,7 +189,6 @@ const EnhancedDashboard: React.FC = () => {
               {prefilledData && (
                 <div className="alert alert-info mb-4" style={{ borderRadius: '15px', border: 'none', background: 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)' }}>
                   <i className="fas fa-info-circle me-2"></i>
-                  <strong>Patient data loaded from Patient Details!</strong><br/>
                   Patient: <strong>{prefilledData.name}</strong> ({prefilledData.patient_id})<br/>
                   Diagnosis: <strong>{prefilledData.primary_icu_diagnosis}</strong>
                 </div>

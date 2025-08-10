@@ -407,7 +407,7 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
                       <div style={{ 
                         fontSize: '14px', 
                         fontWeight: '600', 
-                        color: '#f59e0b',
+                        color: '#0ea5e9',
                         marginBottom: '8px',
                         display: 'flex',
                         alignItems: 'center',
@@ -432,7 +432,7 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
                             <span style={{ 
                               position: 'absolute', 
                               left: '0', 
-                              color: '#f59e0b',
+                              color: '#0ea5e9',
                               fontWeight: '600'
                             }}>•</span>
                             {step}
