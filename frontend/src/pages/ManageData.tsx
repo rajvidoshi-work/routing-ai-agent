@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Alert, ListGroup, Modal, Badge, Form } from 'react-bootstrap';
 import { dataAPI, DataStatus, FileInfo, Patient, handleApiError } from '../services/api';
+import AdonixHeader from '../components/AdonixHeader';
 
 const ManageData: React.FC = () => {
   const [dataStatus, setDataStatus] = useState<DataStatus | null>(null);
@@ -135,7 +136,13 @@ const ManageData: React.FC = () => {
   ).length;
 
   return (
-    <Container className="mt-4">
+    <>
+      <AdonixHeader 
+        showBackButton={true}
+        backButtonText="← Back to Dashboard"
+        backButtonPath="/"
+      />
+      <Container className="mt-4">
       {/* Page Header */}
       <Row className="mb-4">
         <Col>
@@ -581,6 +588,7 @@ const ManageData: React.FC = () => {
         </Modal.Footer>
       </Modal>
     </Container>
+    </>
   );
 };
 

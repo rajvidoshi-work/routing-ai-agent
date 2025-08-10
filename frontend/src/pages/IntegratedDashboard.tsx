@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useScrollToTop } from '../hooks/useScrollToTop';
 import { useAuth } from '../contexts/AuthContext';
+import AdonixHeader from '../components/AdonixHeader';
 import './Dashboard.css';
 
 interface IntegratedDashboardProps {}
 
 const IntegratedDashboard: React.FC<IntegratedDashboardProps> = () => {
   const navigate = useNavigate();
-  const { userId, logout } = useAuth();
+  const { userId } = useAuth();
   const [patients, setPatients] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
@@ -54,13 +55,6 @@ const IntegratedDashboard: React.FC<IntegratedDashboardProps> = () => {
 
   const handleManageData = () => {
     navigate('/manage-data');
-  };
-
-  const handleLogout = () => {
-    if (window.confirm('Are you sure you want to logout?')) {
-      logout();
-      navigate('/login');
-    }
   };
 
   const getStatusBadge = (patient: any) => {
@@ -136,18 +130,7 @@ const IntegratedDashboard: React.FC<IntegratedDashboardProps> = () => {
 
   return (
     <div className="dashboard-container">
-      <header className="dashboard-header">
-        <div className="header-content">
-          <div className="logo">
-            <div className="logo-icon">+</div>
-            <span className="logo-text">Adonix Medical</span>
-          </div>
-          <div className="user-section">
-            <span className="welcome-text">Welcome, {userId}</span>
-            <button onClick={handleLogout} className="logout-btn">Logout</button>
-          </div>
-        </div>
-      </header>
+      <AdonixHeader showManageData={true} />
       
       <main className="dashboard-main">
         <div className="dashboard-grid">

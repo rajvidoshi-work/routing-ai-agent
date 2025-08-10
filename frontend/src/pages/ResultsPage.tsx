@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import AdonixHeader from '../components/AdonixHeader';
 
 // Add CSS animation for spinner
 const spinnerCSS = `
@@ -205,6 +206,11 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
 
   return (
     <>
+      <AdonixHeader 
+        showBackButton={true}
+        backButtonText="← Back to Discharge Planning"
+        backButtonPath="/enhanced-dashboard"
+      />
       <style>{spinnerCSS}</style>
       <div style={containerStyle}>
       {/* Header */}

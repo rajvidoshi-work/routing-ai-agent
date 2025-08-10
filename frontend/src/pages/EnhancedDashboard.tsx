@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useScrollToTop } from '../hooks/useScrollToTop';
+import AdonixHeader from '../components/AdonixHeader';
 
 // Add CSS animation for spinner
 const spinnerCSS = `
@@ -165,7 +166,13 @@ const EnhancedDashboard: React.FC = () => {
   };
 
   return (
-    <div className="container-fluid" style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+    <>
+      <AdonixHeader 
+        showBackButton={true}
+        backButtonText="← Back to Patient Details"
+        backButtonPath="/patient-details"
+      />
+      <div className="container-fluid" style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
       <style>{spinnerCSS}</style>
       
       <div className="row justify-content-center align-items-center min-vh-100">
@@ -275,6 +282,7 @@ const EnhancedDashboard: React.FC = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

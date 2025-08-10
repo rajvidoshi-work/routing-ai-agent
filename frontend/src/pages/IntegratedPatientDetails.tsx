@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useScrollToTop } from '../hooks/useScrollToTop';
+import AdonixHeader from '../components/AdonixHeader';
 import './PatientDetails.css';
 
 interface IntegratedPatientDetailsProps {}
@@ -116,16 +117,6 @@ const IntegratedPatientDetails: React.FC<IntegratedPatientDetailsProps> = () => 
     });
   };
 
-  const handleBack = () => {
-    // Check if we came from dashboard
-    if (location.state && location.state.fromDashboard) {
-      navigate('/');
-    } else {
-      // Navigate to manage data page
-      navigate('/manage-data');
-    }
-  };
-
   const handlePatientSelect = (patient: any) => {
     setSelectedPatient(patient);
   };
@@ -147,17 +138,11 @@ const IntegratedPatientDetails: React.FC<IntegratedPatientDetailsProps> = () => 
 
   return (
     <div className="patient-details-container">
-      <header className="patient-header">
-        <div className="header-content">
-          <div className="logo">
-            <div className="logo-icon">+</div>
-            <span className="logo-text">Adonix Medical</span>
-          </div>
-          <button onClick={handleBack} className="back-btn">
-            {location.state && location.state.fromDashboard ? '← Back to Dashboard' : '← Back to Data Management'}
-          </button>
-        </div>
-      </header>
+      <AdonixHeader 
+        showBackButton={true}
+        backButtonText={location.state && location.state.fromDashboard ? '← Back to Dashboard' : '← Back to Data Management'}
+        backButtonPath={location.state && location.state.fromDashboard ? '/' : '/manage-data'}
+      />
       
       <main className="patient-main">
         <div className="patient-title-section">

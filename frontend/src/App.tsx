@@ -25,7 +25,6 @@ const AppContent: React.FC = () => {
 
   return (
     <>
-      {isAuthenticated && <Navbar />}
       <Routes>
         <Route path="/login" element={<IntegratedLoginScreen />} />
         <Route path="/" element={
