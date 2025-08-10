@@ -100,28 +100,27 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
     }));
   };
 
-  // Styles
+  // Styles - Updated to match professional design
   const containerStyle: React.CSSProperties = {
     minHeight: '100vh',
-    backgroundColor: '#f8fafc',
-    fontFamily: '"Inter", "Segoe UI", "Roboto", sans-serif'
+    background: 'linear-gradient(135deg, #e8f4fd 0%, #f0f9ff 100%)',
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif'
   };
 
   const headerStyle: React.CSSProperties = {
-    background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+    background: 'rgba(255, 255, 255, 0.95)',
+    backdropFilter: 'blur(20px)',
+    borderBottom: '1px solid rgba(14, 165, 233, 0.1)',
     padding: '24px 32px',
-    color: 'white',
     marginBottom: '32px'
   };
 
   const titleStyle: React.CSSProperties = {
-    fontSize: '28px',
+    fontSize: '32px',
     fontWeight: '700',
     margin: '0',
-    letterSpacing: '-0.5px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px'
+    color: '#1e293b',
+    letterSpacing: '-0.5px'
   };
 
   const contentStyle: React.CSSProperties = {
@@ -131,44 +130,49 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
   };
 
   const backButtonStyle: React.CSSProperties = {
-    background: 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)',
-    color: 'white',
-    padding: '12px 24px',
-    border: 'none',
-    borderRadius: '8px',
+    background: 'transparent',
+    border: '2px solid #0ea5e9',
+    color: '#0ea5e9',
+    padding: '8px 16px',
+    borderRadius: '12px',
     fontSize: '14px',
     cursor: 'pointer',
     fontWeight: '600',
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
-    marginBottom: '24px'
+    marginBottom: '24px',
+    transition: 'all 0.3s ease'
   };
 
   const resultsCardStyle: React.CSSProperties = {
-    backgroundColor: 'white',
-    borderRadius: '12px',
-    border: '1px solid #d1fae5',
+    background: 'rgba(255, 255, 255, 0.95)',
+    backdropFilter: 'blur(20px)',
+    borderRadius: '20px',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
     overflow: 'hidden',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
     marginBottom: '24px'
   };
 
   const routingDecisionStyle: React.CSSProperties = {
-    background: 'linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%)',
-    padding: '24px',
+    background: 'rgba(255, 255, 255, 0.95)',
+    backdropFilter: 'blur(20px)',
+    padding: '32px',
     margin: '24px',
-    borderRadius: '10px',
-    border: '1px solid #a7f3d0'
+    borderRadius: '16px',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.05)'
   };
 
   const agentCardStyle: React.CSSProperties = {
-    backgroundColor: '#ffffff',
-    padding: '24px',
-    borderRadius: '10px',
+    background: 'rgba(255, 255, 255, 0.95)',
+    backdropFilter: 'blur(20px)',
+    padding: '32px',
+    borderRadius: '16px',
     marginBottom: '16px',
-    border: '1px solid #e5e7eb',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.05)',
     margin: '0 24px 16px 24px'
   };
 
@@ -176,20 +180,22 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
     display: 'block',
     marginBottom: '8px',
     fontWeight: '600',
-    color: '#374151',
+    color: '#475569',
     fontSize: '14px',
-    letterSpacing: '0.025em'
+    textTransform: 'uppercase',
+    letterSpacing: '0.5px'
   };
 
   const inputStyle: React.CSSProperties = {
     width: '100%',
-    padding: '14px 16px',
-    border: '2px solid #e5e7eb',
-    borderRadius: '8px',
+    padding: '16px 20px',
+    border: '2px solid #f1f5f9',
+    borderRadius: '16px',
     fontSize: '16px',
     boxSizing: 'border-box',
     fontFamily: 'inherit',
-    backgroundColor: '#ffffff'
+    background: '#f8fafc',
+    transition: 'all 0.3s ease'
   };
 
   if (!results) {
@@ -217,7 +223,6 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
       <div style={headerStyle}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <h1 style={titleStyle}>
-            <span style={{ fontSize: '32px' }}>📋</span>
             Discharge Planning Results
           </h1>
         </div>
@@ -240,15 +245,14 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
           {results.routing_decision && (
             <div style={routingDecisionStyle}>
               <h3 style={{ 
-                color: '#065f46', 
+                color: '#1e293b', 
                 marginBottom: '20px',
-                fontSize: '18px',
-                fontWeight: '600',
+                fontSize: '24px',
+                fontWeight: '700',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px'
               }}>
-                <span style={{ fontSize: '20px' }}>🎯</span>
                 AI Routing Decision
               </h3>
               <div style={{ 
@@ -258,65 +262,65 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
                 marginBottom: '16px'
               }}>
                 <div style={{ 
-                  backgroundColor: 'white', 
-                  padding: '12px 16px', 
-                  borderRadius: '8px',
-                  border: '1px solid #a7f3d0'
+                  background: '#f8fafc', 
+                  padding: '16px 20px', 
+                  borderRadius: '12px',
+                  border: '2px solid #f1f5f9'
                 }}>
-                  <div style={{ fontSize: '12px', color: '#6b7280', fontWeight: '500' }}>PATIENT ID</div>
-                  <div style={{ fontSize: '14px', fontWeight: '600', color: '#065f46' }}>
+                  <div style={{ fontSize: '12px', color: '#64748b', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>PATIENT ID</div>
+                  <div style={{ fontSize: '16px', fontWeight: '700', color: '#1e293b', marginTop: '4px' }}>
                     {results.routing_decision.patient_id}
                   </div>
                 </div>
                 <div style={{ 
-                  backgroundColor: 'white', 
-                  padding: '12px 16px', 
-                  borderRadius: '8px',
-                  border: '1px solid #a7f3d0'
+                  background: '#f8fafc', 
+                  padding: '16px 20px', 
+                  borderRadius: '12px',
+                  border: '2px solid #f1f5f9'
                 }}>
-                  <div style={{ fontSize: '12px', color: '#6b7280', fontWeight: '500' }}>PRIORITY SCORE</div>
-                  <div style={{ fontSize: '14px', fontWeight: '600', color: '#065f46' }}>
+                  <div style={{ fontSize: '12px', color: '#64748b', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>PRIORITY SCORE</div>
+                  <div style={{ fontSize: '16px', fontWeight: '700', color: '#1e293b', marginTop: '4px' }}>
                     {results.routing_decision.priority_score}/10
                   </div>
                 </div>
                 <div style={{ 
-                  backgroundColor: 'white', 
-                  padding: '12px 16px', 
-                  borderRadius: '8px',
-                  border: '1px solid #a7f3d0'
+                  background: '#f8fafc', 
+                  padding: '16px 20px', 
+                  borderRadius: '12px',
+                  border: '2px solid #f1f5f9'
                 }}>
-                  <div style={{ fontSize: '12px', color: '#6b7280', fontWeight: '500' }}>TIMELINE</div>
-                  <div style={{ fontSize: '14px', fontWeight: '600', color: '#065f46' }}>
+                  <div style={{ fontSize: '12px', color: '#64748b', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>TIMELINE</div>
+                  <div style={{ fontSize: '16px', fontWeight: '700', color: '#1e293b', marginTop: '4px' }}>
                     {results.routing_decision.estimated_timeline}
                   </div>
                 </div>
                 <div style={{ 
-                  backgroundColor: 'white', 
-                  padding: '12px 16px', 
-                  borderRadius: '8px',
-                  border: '1px solid #a7f3d0'
+                  background: '#f8fafc', 
+                  padding: '16px 20px', 
+                  borderRadius: '12px',
+                  border: '2px solid #f1f5f9'
                 }}>
-                  <div style={{ fontSize: '12px', color: '#6b7280', fontWeight: '500' }}>RECOMMENDED AGENTS</div>
-                  <div style={{ fontSize: '14px', fontWeight: '600', color: '#065f46' }}>
+                  <div style={{ fontSize: '12px', color: '#64748b', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>RECOMMENDED AGENTS</div>
+                  <div style={{ fontSize: '16px', fontWeight: '700', color: '#1e293b', marginTop: '4px' }}>
                     {results.routing_decision.recommended_agents?.join(', ')}
                   </div>
                 </div>
               </div>
               <div style={{ 
-                backgroundColor: 'white', 
-                padding: '16px', 
-                borderRadius: '8px',
-                border: '1px solid #a7f3d0'
+                background: '#f8fafc', 
+                padding: '20px', 
+                borderRadius: '12px',
+                border: '2px solid #f1f5f9',
+                marginTop: '16px'
               }}>
-                <div style={{ fontSize: '12px', color: '#6b7280', fontWeight: '500', marginBottom: '8px' }}>
+                <div style={{ fontSize: '12px', color: '#64748b', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '12px' }}>
                   AI REASONING
                 </div>
                 <p style={{ 
                   margin: 0, 
-                  fontSize: '14px', 
-                  lineHeight: '1.5', 
-                  color: '#374151',
-                  fontStyle: 'italic'
+                  fontSize: '16px', 
+                  lineHeight: '1.6', 
+                  color: '#1e293b'
                 }}>
                   {results.routing_decision.reasoning}
                 </p>
@@ -328,16 +332,12 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
           {results.agent_responses && results.agent_responses.length > 0 && (
             <div style={{ padding: '0 0 24px 0' }}>
               <h3 style={{ 
-                color: '#1f2937', 
+                color: '#1e293b', 
                 marginBottom: '20px',
-                fontSize: '18px',
-                fontWeight: '600',
-                padding: '0 24px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
+                fontSize: '24px',
+                fontWeight: '700',
+                padding: '0 24px'
               }}>
-                <span style={{ fontSize: '20px' }}>🤖</span>
                 Agent Recommendations ({results.agent_responses.length} agents)
               </h3>
               {results.agent_responses.map((response: any, index: number) => (
@@ -354,10 +354,10 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
                     gap: '8px'
                   }}>
                     <span style={{ fontSize: '18px' }}>
-                      {response.agent_type === 'nursing' ? '👩‍⚕️' :
-                       response.agent_type === 'dme' ? '🏥' :
-                       response.agent_type === 'pharmacy' ? '💊' :
-                       response.agent_type === 'state' ? '📋' : '🤖'}
+                      {response.agent_type === 'nursing' ? '' :
+                       response.agent_type === 'dme' ? '' :
+                       response.agent_type === 'pharmacy' ? '' :
+                       response.agent_type === 'state' ? '' : ''}
                     </span>
                     {response.agent_type || `Agent ${index + 1}`}
                   </h4>
@@ -373,7 +373,7 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
                         alignItems: 'center',
                         gap: '6px'
                       }}>
-                        <span>📝</span> Recommendations
+                        <span></span> Recommendations
                       </div>
                       <ul style={{ 
                         margin: 0, 
@@ -519,7 +519,7 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
                           e.currentTarget.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)';
                         }}
                       >
-                        <span style={{ fontSize: '16px' }}>📋</span>
+                        <span style={{ fontSize: '16px' }}></span>
                         Create Order Form
                       </button>
                     </div>
@@ -562,7 +562,7 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
                           e.currentTarget.style.boxShadow = '0 4px 12px rgba(5, 150, 105, 0.3)';
                         }}
                       >
-                        <span style={{ fontSize: '16px' }}>🏥</span>
+                        <span style={{ fontSize: '16px' }}></span>
                         Create DME Order Form
                       </button>
                     </div>
@@ -605,7 +605,7 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
                           e.currentTarget.style.boxShadow = '0 4px 12px rgba(220, 38, 38, 0.3)';
                         }}
                       >
-                        <span style={{ fontSize: '16px' }}>💊</span>
+                        <span style={{ fontSize: '16px' }}></span>
                         Create Pharmacy Order Form
                       </button>
                     </div>
@@ -648,7 +648,7 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
                           e.currentTarget.style.boxShadow = '0 4px 12px rgba(124, 58, 237, 0.3)';
                         }}
                       >
-                        <span style={{ fontSize: '16px' }}>📋</span>
+                        <span style={{ fontSize: '16px' }}></span>
                         Create Authorization Form
                       </button>
                     </div>

@@ -119,11 +119,11 @@ const ForcedForm: React.FC = () => {
           }
         });
       } else {
-        setMessage('❌ Processing failed');
+        setMessage('Processing failed');
         setLoading(false);
       }
     } catch (err) {
-      setMessage('❌ Error occurred');
+      setMessage('Error occurred');
       setLoading(false);
     }
   };
@@ -131,27 +131,26 @@ const ForcedForm: React.FC = () => {
   // Modern medical UI styles - Direct page layout (no container box)
   const containerStyle: React.CSSProperties = {
     minHeight: '100vh',
-    backgroundColor: '#f8fafc',
-    fontFamily: '"Inter", "Segoe UI", "Roboto", sans-serif',
+    background: 'linear-gradient(135deg, #e8f4fd 0%, #f0f9ff 100%)',
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif',
     padding: '0',
     margin: '0'
   };
 
   const headerStyle: React.CSSProperties = {
-    background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
+    background: 'rgba(255, 255, 255, 0.95)',
+    backdropFilter: 'blur(20px)',
+    borderBottom: '1px solid rgba(14, 165, 233, 0.1)',
     padding: '24px 32px',
-    color: 'white',
     marginBottom: '32px'
   };
 
   const titleStyle: React.CSSProperties = {
-    fontSize: '28px',
+    fontSize: '32px',
     fontWeight: '700',
+    color: '#1e293b',
     margin: '0',
-    letterSpacing: '-0.5px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px'
+    letterSpacing: '-0.5px'
   };
 
   const contentStyle: React.CSSProperties = {
@@ -161,12 +160,13 @@ const ForcedForm: React.FC = () => {
   };
 
   const formCardStyle: React.CSSProperties = {
-    backgroundColor: 'white',
-    borderRadius: '12px',
-    padding: '28px',
+    background: 'rgba(255, 255, 255, 0.95)',
+    backdropFilter: 'blur(20px)',
+    borderRadius: '20px',
+    padding: '32px',
     marginBottom: '24px',
-    border: '1px solid #e5e7eb',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
   };
 
   const formGroupStyle: React.CSSProperties = {
@@ -177,38 +177,39 @@ const ForcedForm: React.FC = () => {
     display: 'block',
     marginBottom: '8px',
     fontWeight: '600',
-    color: '#374151',
+    color: '#475569',
     fontSize: '14px',
-    letterSpacing: '0.025em'
+    textTransform: 'uppercase',
+    letterSpacing: '0.5px'
   };
 
   const inputStyle: React.CSSProperties = {
     width: '100%',
-    padding: '14px 16px',
-    border: '2px solid #e5e7eb',
-    borderRadius: '8px',
+    padding: '16px 20px',
+    border: '2px solid #f1f5f9',
+    borderRadius: '16px',
     fontSize: '16px',
     boxSizing: 'border-box',
-    transition: 'all 0.2s ease',
+    transition: 'all 0.3s ease',
     fontFamily: 'inherit',
-    backgroundColor: '#ffffff'
+    background: '#f8fafc'
   };
 
   const buttonStyle: React.CSSProperties = {
     background: loading ? 
       'linear-gradient(135deg, #9ca3af 0%, #6b7280 100%)' : 
-      'linear-gradient(135deg, #059669 0%, #047857 100%)',
+      'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)',
     color: 'white',
-    padding: '16px 32px',
+    padding: '18px 32px',
     border: 'none',
-    borderRadius: '10px',
+    borderRadius: '16px',
     fontSize: '16px',
     cursor: loading ? 'not-allowed' : 'pointer',
     width: '100%',
     fontWeight: '600',
     letterSpacing: '0.025em',
-    boxShadow: loading ? 'none' : '0 4px 12px rgba(5, 150, 105, 0.3)',
-    transition: 'all 0.2s ease',
+    boxShadow: loading ? 'none' : '0 8px 24px rgba(14, 165, 233, 0.3)',
+    transition: 'all 0.3s ease',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -218,12 +219,12 @@ const ForcedForm: React.FC = () => {
   const messageStyle: React.CSSProperties = {
     marginTop: '20px',
     padding: '16px 20px',
-    borderRadius: '10px',
+    borderRadius: '16px',
     fontSize: '14px',
     fontWeight: '500',
-    backgroundColor: message.includes('✅') ? '#ecfdf5' : '#fef2f2',
-    color: message.includes('✅') ? '#065f46' : '#991b1b',
-    border: `1px solid ${message.includes('✅') ? '#a7f3d0' : '#fecaca'}`,
+    backgroundColor: message.includes('success') ? '#f0fdf4' : '#fef2f2',
+    color: message.includes('success') ? '#16a34a' : '#dc2626',
+    border: `1px solid ${message.includes('success') ? '#bbf7d0' : '#fecaca'}`,
     display: 'flex',
     alignItems: 'center',
     gap: '8px'
@@ -237,7 +238,6 @@ const ForcedForm: React.FC = () => {
         <div style={headerStyle}>
           <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
             <h1 style={titleStyle}>
-              <span style={{ fontSize: '32px' }}>🏥</span>
               Discharge Planning Dashboard
             </h1>
           </div>
