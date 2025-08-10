@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useScrollToTop } from '../hooks/useScrollToTop';
+import { useAuth } from '../contexts/AuthContext';
 import './Dashboard.css';
 
 interface IntegratedDashboardProps {}
 
 const IntegratedDashboard: React.FC<IntegratedDashboardProps> = () => {
   const navigate = useNavigate();
+  const { userId, logout } = useAuth();
   const [patients, setPatients] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
@@ -52,6 +54,13 @@ const IntegratedDashboard: React.FC<IntegratedDashboardProps> = () => {
 
   const handleManageData = () => {
     navigate('/manage-data');
+  };
+
+  const handleLogout = () => {
+    if (window.confirm('Are you sure you want to logout?')) {
+      logout();
+      navigate('/login');
+    }
   };
 
   const getStatusBadge = (patient: any) => {
@@ -134,8 +143,8 @@ const IntegratedDashboard: React.FC<IntegratedDashboardProps> = () => {
             <span className="logo-text">Adonix Medical</span>
           </div>
           <div className="user-section">
-            <span className="welcome-text">Welcome, Healthcare Professional</span>
-            <button onClick={handleManageData} className="logout-btn">Manage Data</button>
+            <span className="welcome-text">Welcome, {userId}</span>
+            <button onClick={handleLogout} className="logout-btn">Logout</button>
           </div>
         </div>
       </header>
