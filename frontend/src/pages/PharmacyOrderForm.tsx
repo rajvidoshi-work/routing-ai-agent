@@ -297,9 +297,9 @@ const PharmacyOrderForm: React.FC<PharmacyOrderFormProps> = () => {
     borderRadius: '16px',
     fontSize: '14px',
     fontWeight: '500',
-    backgroundColor: message.includes('✅') ? '#f0fdf4' : '#fef2f2',
-    color: message.includes('✅') ? '#16a34a' : '#dc2626',
-    border: `1px solid ${message.includes('✅') ? '#bbf7d0' : '#fecaca'}`,
+    backgroundColor: message.includes('✅') ? '#e0f2fe' : '#fef2f2',
+    color: message.includes('✅') ? '#0ea5e9' : '#dc2626',
+    border: `1px solid ${message.includes('✅') ? '#bae6fd' : '#fecaca'}`,
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
@@ -548,11 +548,11 @@ const PharmacyOrderForm: React.FC<PharmacyOrderFormProps> = () => {
 
                 {/* Medication Information Section */}
                 <div style={{ 
-                  backgroundColor: '#f0fdf4', 
+                  backgroundColor: '#e0f2fe', 
                   padding: '20px', 
                   borderRadius: '8px', 
                   marginBottom: '24px',
-                  border: '1px solid #bbf7d0'
+                  border: '1px solid #bae6fd'
                 }}>
                   <h4 style={{ 
                     color: '#0ea5e9', 
@@ -920,81 +920,6 @@ const PharmacyOrderForm: React.FC<PharmacyOrderFormProps> = () => {
                   </div>
                 </div>
 
-                {/* Insurance Information Section */}
-                <div style={{ 
-                  backgroundColor: '#fdf2f8', 
-                  padding: '20px', 
-                  borderRadius: '8px', 
-                  marginBottom: '24px',
-                  border: '1px solid #f9a8d4'
-                }}>
-                  <h4 style={{ 
-                    color: '#be185d', 
-                    marginBottom: '16px',
-                    fontSize: '16px',
-                    fontWeight: '600'
-                  }}>
-                    💳 Insurance Information
-                  </h4>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                    <div>
-                      <label style={labelStyle}>Primary Insurance</label>
-                      <input
-                        type="text"
-                        value={pharmacyForm.primaryInsurance || ''}
-                        onChange={(e) => updatePharmacyForm('primaryInsurance', e.target.value)}
-                        placeholder="Primary insurance provider"
-                        style={inputStyle}
-                      />
-                    </div>
-                    <div>
-                      <label style={labelStyle}>Policy Number</label>
-                      <input
-                        type="text"
-                        value={pharmacyForm.policyNumber || ''}
-                        onChange={(e) => updatePharmacyForm('policyNumber', e.target.value)}
-                        placeholder="Insurance policy number"
-                        style={inputStyle}
-                      />
-                    </div>
-                  </div>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                    <div>
-                      <label style={labelStyle}>Group Number</label>
-                      <input
-                        type="text"
-                        value={pharmacyForm.groupNumber || ''}
-                        onChange={(e) => updatePharmacyForm('groupNumber', e.target.value)}
-                        placeholder="Insurance group number"
-                        style={inputStyle}
-                      />
-                    </div>
-                    <div>
-                      <label style={labelStyle}>Prior Authorization Number</label>
-                      <input
-                        type="text"
-                        value={pharmacyForm.priorAuthNumber || ''}
-                        onChange={(e) => updatePharmacyForm('priorAuthNumber', e.target.value)}
-                        placeholder="PA number (if obtained)"
-                        style={inputStyle}
-                      />
-                    </div>
-                  </div>
-
-                  <div style={{ marginBottom: '16px' }}>
-                    <label style={labelStyle}>Secondary Insurance</label>
-                    <input
-                      type="text"
-                      value={pharmacyForm.secondaryInsurance || ''}
-                      onChange={(e) => updatePharmacyForm('secondaryInsurance', e.target.value)}
-                      placeholder="Secondary insurance (if any)"
-                      style={inputStyle}
-                    />
-                  </div>
-                </div>
-
                 <div style={{ marginBottom: '24px' }}>
                   <label style={labelStyle}>
                     Specific Pharmacy/Medication Concern *
@@ -1021,7 +946,7 @@ const PharmacyOrderForm: React.FC<PharmacyOrderFormProps> = () => {
                     value={pharmacyForm.notes || ''}
                     onChange={(e) => updatePharmacyForm('notes', e.target.value)}
                     rows={3}
-                    placeholder="Any additional information, allergies, insurance coverage details, preferred pharmacy, or special medication instructions..."
+                    placeholder="Any additional information, allergies, preferred pharmacy, or special medication instructions..."
                     style={{
                       ...inputStyle,
                       minHeight: '90px',
@@ -1054,12 +979,12 @@ const PharmacyOrderForm: React.FC<PharmacyOrderFormProps> = () => {
             ) : (
               <div>
                 <div style={{
-                  backgroundColor: '#f0fdf4',
-                  color: '#16a34a',
+                  backgroundColor: '#e0f2fe',
+                  color: '#0ea5e9',
                   padding: '20px',
                   borderRadius: '16px',
                   marginBottom: '24px',
-                  border: '1px solid #bbf7d0',
+                  border: '1px solid #bae6fd',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '10px',

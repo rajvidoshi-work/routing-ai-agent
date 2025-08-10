@@ -124,7 +124,7 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
       
       // Original concern and notes
       concern: "Patient requires hospital bed for congestive heart failure management. Need bed with head elevation capability for respiratory support and safe patient positioning during recovery period.",
-      notes: "Patient lives in second-floor apartment - delivery team should coordinate for stair access. Family available for training on bed operation. Insurance pre-authorization may be required for extended rental period."
+      notes: "Patient lives in second-floor apartment - delivery team should coordinate for stair access. Family available for training on bed operation."
     };
   };
 
@@ -290,9 +290,9 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
     borderRadius: '16px',
     fontSize: '14px',
     fontWeight: '500',
-    backgroundColor: message.includes('success') ? '#f0fdf4' : '#fef2f2',
-    color: message.includes('success') ? '#16a34a' : '#dc2626',
-    border: `1px solid ${message.includes('success') ? '#bbf7d0' : '#fecaca'}`,
+    backgroundColor: message.includes('success') ? '#e0f2fe' : '#fef2f2',
+    color: message.includes('success') ? '#0ea5e9' : '#dc2626',
+    border: `1px solid ${message.includes('success') ? '#bae6fd' : '#fecaca'}`,
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
@@ -396,7 +396,7 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
                   <span style={{ fontSize: '20px' }}>🤖</span>
                   <div>
                     <div style={{ 
-                      color: '#16a34a', 
+                      color: '#0ea5e9', 
                       fontSize: '14px', 
                       fontWeight: '600' 
                     }}>
@@ -519,11 +519,11 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
 
                 {/* Equipment Details Section */}
                 <div style={{ 
-                  backgroundColor: '#f0fdf4', 
+                  backgroundColor: '#e0f2fe', 
                   padding: '20px', 
                   borderRadius: '8px', 
                   marginBottom: '24px',
-                  border: '1px solid #bbf7d0'
+                  border: '1px solid #bae6fd'
                 }}>
                   <h4 style={{ 
                     color: '#0ea5e9', 
@@ -696,93 +696,13 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
                     value={dmeForm.notes || ''}
                     onChange={(e) => updateDMEForm('notes', e.target.value)}
                     rows={3}
-                    placeholder="Any additional information, special equipment considerations, delivery instructions, or insurance details..."
+                    placeholder="Any additional information, special equipment considerations, or delivery instructions..."
                     style={{
                       ...inputStyle,
                       minHeight: '90px',
                       resize: 'vertical'
                     }}
                   />
-                </div>
-
-                {/* Insurance & Authorization Section */}
-                <div style={{ 
-                  backgroundColor: '#f0f9ff', 
-                  padding: '20px', 
-                  borderRadius: '8px', 
-                  marginBottom: '24px',
-                  border: '1px solid #bae6fd'
-                }}>
-                  <h4 style={{ 
-                    color: '#0ea5e9', 
-                    marginBottom: '16px',
-                    fontSize: '16px',
-                    fontWeight: '600'
-                  }}>
-                    💰 Insurance & Authorization
-                  </h4>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                    <div>
-                      <label style={labelStyle}>Primary Insurance</label>
-                      <input
-                        type="text"
-                        value={dmeForm.primaryInsurance || ''}
-                        onChange={(e) => updateDMEForm('primaryInsurance', e.target.value)}
-                        placeholder="Primary insurance provider"
-                        style={inputStyle}
-                      />
-                    </div>
-                    <div>
-                      <label style={labelStyle}>Secondary Insurance</label>
-                      <input
-                        type="text"
-                        value={dmeForm.secondaryInsurance || ''}
-                        onChange={(e) => updateDMEForm('secondaryInsurance', e.target.value)}
-                        placeholder="Secondary insurance (if any)"
-                        style={inputStyle}
-                      />
-                    </div>
-                  </div>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                    <div>
-                      <label style={labelStyle}>Prior Authorization Number</label>
-                      <input
-                        type="text"
-                        value={dmeForm.priorAuthNumber || ''}
-                        onChange={(e) => updateDMEForm('priorAuthNumber', e.target.value)}
-                        placeholder="PA number (if obtained)"
-                        style={inputStyle}
-                      />
-                    </div>
-                    <div>
-                      <label style={labelStyle}>Insurance Coverage Status</label>
-                      <select
-                        value={dmeForm.coverageStatus || ''}
-                        onChange={(e) => updateDMEForm('coverageStatus', e.target.value)}
-                        style={inputStyle}
-                      >
-                        <option value="">Select status</option>
-                        <option value="verified">Verified</option>
-                        <option value="pending">Pending Verification</option>
-                        <option value="denied">Denied</option>
-                        <option value="partial">Partial Coverage</option>
-                        <option value="unknown">Unknown</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div style={{ marginBottom: '16px' }}>
-                    <label style={labelStyle}>Patient Responsibility/Copay</label>
-                    <input
-                      type="text"
-                      value={dmeForm.patientResponsibility || ''}
-                      onChange={(e) => updateDMEForm('patientResponsibility', e.target.value)}
-                      placeholder="Patient copay or out-of-pocket amount"
-                      style={inputStyle}
-                    />
-                  </div>
                 </div>
 
                 {/* Delivery & Setup Section */}
@@ -954,8 +874,8 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
             ) : (
               <div>
                 <div style={{
-                  backgroundColor: '#f0f9ff',
-                  color: '#16a34a',
+                  backgroundColor: '#e0f2fe',
+                  color: '#0ea5e9',
                   padding: '20px',
                   borderRadius: '10px',
                   marginBottom: '24px',
