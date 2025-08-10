@@ -20,6 +20,9 @@ const DMEOrderForm: React.FC<DMEOrderFormProps> = () => {
   const [results, setResults] = useState<any>(null);
 
   useEffect(() => {
+    // Scroll to top when component mounts
+    window.scrollTo(0, 0);
+    
     // Get results and patient data from navigation state
     if (location.state && location.state.results && location.state.patientData) {
       setResults(location.state.results);

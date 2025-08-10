@@ -20,6 +20,9 @@ const ResultsPage: React.FC<ResultsPageProps> = () => {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
+    // Scroll to top when component mounts
+    window.scrollTo(0, 0);
+    
     // Get results from navigation state
     if (location.state && location.state.results) {
       setResults(location.state.results);

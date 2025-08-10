@@ -14,6 +14,9 @@ const ManageData: React.FC = () => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
   useEffect(() => {
+    // Scroll to top when component mounts
+    window.scrollTo(0, 0);
+    
     loadData();
     // Auto-refresh every 30 seconds
     const interval = setInterval(loadData, 30000);
