@@ -12,25 +12,28 @@ const SimpleForm: React.FC = () => {
   return (
     <div style={{
       padding: '40px',
-      backgroundColor: '#ffffff',
+      background: 'linear-gradient(135deg, #e8f4fd 0%, #f0f9ff 100%)',
       minHeight: '100vh',
-      fontFamily: 'Arial, sans-serif'
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif'
     }}>
       <div style={{
         maxWidth: '800px',
         margin: '0 auto',
-        backgroundColor: '#f8f9fa',
+        background: 'rgba(255, 255, 255, 0.95)',
+        backdropFilter: 'blur(20px)',
         padding: '40px',
-        borderRadius: '10px',
-        border: '3px solid #007bff'
+        borderRadius: '20px',
+        border: '1px solid rgba(255, 255, 255, 0.2)',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
       }}>
         <h1 style={{
-          color: '#007bff',
+          color: '#1e293b',
           textAlign: 'center',
           marginBottom: '40px',
-          fontSize: '32px'
+          fontSize: '32px',
+          fontWeight: '700'
         }}>
-          🏥 Discharge Planning Form
+          Discharge Planning Form
         </h1>
 
         <form onSubmit={handleSubmit} style={{ width: '100%' }}>
@@ -38,9 +41,11 @@ const SimpleForm: React.FC = () => {
             <label style={{
               display: 'block',
               marginBottom: '10px',
-              fontSize: '18px',
-              fontWeight: 'bold',
-              color: '#333'
+              fontSize: '14px',
+              fontWeight: '600',
+              color: '#475569',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px'
             }}>
               Patient Name:
             </label>
@@ -50,10 +55,12 @@ const SimpleForm: React.FC = () => {
               onChange={(e) => setPatientName(e.target.value)}
               style={{
                 width: '100%',
-                padding: '15px',
+                padding: '16px 20px',
                 fontSize: '16px',
-                border: '2px solid #ddd',
-                borderRadius: '5px',
+                border: '2px solid #f1f5f9',
+                borderRadius: '16px',
+                background: '#f8fafc',
+                transition: 'all 0.3s ease',
                 boxSizing: 'border-box'
               }}
               placeholder="Enter patient name..."
@@ -65,9 +72,11 @@ const SimpleForm: React.FC = () => {
             <label style={{
               display: 'block',
               marginBottom: '10px',
-              fontSize: '18px',
-              fontWeight: 'bold',
-              color: '#333'
+              fontSize: '14px',
+              fontWeight: '600',
+              color: '#475569',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px'
             }}>
               Primary Concern:
             </label>
@@ -77,11 +86,14 @@ const SimpleForm: React.FC = () => {
               rows={5}
               style={{
                 width: '100%',
-                padding: '15px',
+                padding: '16px 20px',
                 fontSize: '16px',
-                border: '2px solid #ddd',
-                borderRadius: '5px',
+                border: '2px solid #f1f5f9',
+                borderRadius: '16px',
                 boxSizing: 'border-box',
+                background: '#f8fafc',
+                transition: 'all 0.3s ease',
+                fontFamily: 'inherit',
                 resize: 'vertical'
               }}
               placeholder="Describe the discharge planning concern..."
@@ -93,17 +105,19 @@ const SimpleForm: React.FC = () => {
             <button
               type="submit"
               style={{
-                backgroundColor: '#28a745',
+                background: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)',
                 color: 'white',
-                padding: '20px 50px',
-                fontSize: '20px',
+                padding: '18px 32px',
+                fontSize: '16px',
                 border: 'none',
-                borderRadius: '8px',
+                borderRadius: '16px',
                 cursor: 'pointer',
-                fontWeight: 'bold'
+                fontWeight: '600',
+                boxShadow: '0 8px 24px rgba(14, 165, 233, 0.3)',
+                transition: 'all 0.3s ease'
               }}
             >
-              🚀 Submit Form
+              Submit Form
             </button>
           </div>
         </form>

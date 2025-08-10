@@ -278,9 +278,9 @@ const ForcedForm: React.FC = () => {
                       cursor: 'pointer'
                     }}
                   >
-                    <option value="low">🟢 Low Priority</option>
-                    <option value="medium">🟡 Medium Priority</option>
-                    <option value="high">🔴 High Priority</option>
+                    <option value="low">Low Priority</option>
+                    <option value="medium">Medium Priority</option>
+                    <option value="high">High Priority</option>
                   </select>
                 </div>
               </div>
@@ -316,7 +316,7 @@ const ForcedForm: React.FC = () => {
                   </>
                 ) : (
                   <>
-                    <span style={{ fontSize: '18px' }}>🚀</span>
+                    <span style={{ fontSize: '18px' }}>Process</span>
                     Process Discharge Planning
                   </>
                 )}

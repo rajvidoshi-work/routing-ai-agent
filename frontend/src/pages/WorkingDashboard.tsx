@@ -105,7 +105,7 @@ const WorkingDashboard: React.FC = () => {
       // Show success message
       if (result.routing_decision) {
         const agents = result.routing_decision.recommended_agents || [];
-        alert(`✅ Processing Complete!\nRecommended agents: ${agents.join(', ')}\nCheck results below.`);
+        alert(`Processing Complete!\nRecommended agents: ${agents.join(', ')}\nCheck results below.`);
       }
       
     } catch (err: any) {
@@ -126,51 +126,54 @@ const WorkingDashboard: React.FC = () => {
   return (
     <div style={{
       padding: '20px',
-      backgroundColor: '#f8f9fa',
+      background: 'linear-gradient(135deg, #e8f4fd 0%, #f0f9ff 100%)',
       minHeight: '100vh',
-      fontFamily: 'Arial, sans-serif'
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif'
     }}>
       <div style={{
         maxWidth: '1000px',
         margin: '0 auto'
       }}>
         <h1 style={{
-          color: '#007bff',
+          color: '#1e293b',
           textAlign: 'center',
           marginBottom: '30px',
-          fontSize: '28px'
+          fontSize: '32px',
+          fontWeight: '700'
         }}>
-          🏥 Discharge Planning Dashboard
+          Discharge Planning Dashboard
         </h1>
 
         {error && (
           <div style={{
-            backgroundColor: '#f8d7da',
-            color: '#721c24',
-            padding: '15px',
-            borderRadius: '5px',
+            backgroundColor: '#fef2f2',
+            color: '#dc2626',
+            padding: '16px 20px',
+            borderRadius: '16px',
             marginBottom: '20px',
-            border: '1px solid #f5c6cb'
+            border: '1px solid #fecaca'
           }}>
-            ❌ {error}
+            {error}
           </div>
         )}
 
         {/* Form Section */}
         <div style={{
-          backgroundColor: 'white',
-          padding: '30px',
-          borderRadius: '10px',
+          background: 'rgba(255, 255, 255, 0.95)',
+          backdropFilter: 'blur(20px)',
+          padding: '32px',
+          borderRadius: '20px',
           marginBottom: '30px',
-          border: '2px solid #007bff',
-          boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
         }}>
           <h2 style={{
-            color: '#007bff',
+            color: '#1e293b',
             marginBottom: '25px',
-            fontSize: '22px'
+            fontSize: '24px',
+            fontWeight: '700'
           }}>
-            📋 Patient Information
+            Patient Information
           </h2>
 
           <form onSubmit={handleSubmit}>
@@ -184,8 +187,11 @@ const WorkingDashboard: React.FC = () => {
                 <label style={{
                   display: 'block',
                   marginBottom: '8px',
-                  fontWeight: 'bold',
-                  color: '#333'
+                  fontWeight: '600',
+                  color: '#475569',
+                  fontSize: '14px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px'
                 }}>
                   Select Patient *
                 </label>
@@ -195,10 +201,12 @@ const WorkingDashboard: React.FC = () => {
                   required
                   style={{
                     width: '100%',
-                    padding: '12px',
+                    padding: '16px 20px',
                     fontSize: '16px',
-                    border: '2px solid #ddd',
-                    borderRadius: '5px'
+                    border: '2px solid #f1f5f9',
+                    borderRadius: '16px',
+                    background: '#f8fafc',
+                    transition: 'all 0.3s ease'
                   }}
                 >
                   <option value="">Choose patient...</option>
@@ -214,8 +222,11 @@ const WorkingDashboard: React.FC = () => {
                 <label style={{
                   display: 'block',
                   marginBottom: '8px',
-                  fontWeight: 'bold',
-                  color: '#333'
+                  fontWeight: '600',
+                  color: '#475569',
+                  fontSize: '14px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px'
                 }}>
                   Urgency Level
                 </label>
@@ -224,15 +235,17 @@ const WorkingDashboard: React.FC = () => {
                   onChange={(e) => setUrgencyLevel(e.target.value)}
                   style={{
                     width: '100%',
-                    padding: '12px',
+                    padding: '16px 20px',
                     fontSize: '16px',
-                    border: '2px solid #ddd',
-                    borderRadius: '5px'
+                    border: '2px solid #f1f5f9',
+                    borderRadius: '16px',
+                    background: '#f8fafc',
+                    transition: 'all 0.3s ease'
                   }}
                 >
-                  <option value="low">🟢 Low Priority</option>
-                  <option value="medium">🟡 Medium Priority</option>
-                  <option value="high">🔴 High Priority</option>
+                  <option value="low">Low Priority</option>
+                  <option value="medium">Medium Priority</option>
+                  <option value="high">High Priority</option>
                 </select>
               </div>
             </div>
@@ -241,8 +254,11 @@ const WorkingDashboard: React.FC = () => {
               <label style={{
                 display: 'block',
                 marginBottom: '8px',
-                fontWeight: 'bold',
-                color: '#333'
+                fontWeight: '600',
+                color: '#475569',
+                fontSize: '14px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px'
               }}>
                 Primary Concern *
               </label>
@@ -254,11 +270,14 @@ const WorkingDashboard: React.FC = () => {
                 placeholder="Describe the primary concern for discharge planning..."
                 style={{
                   width: '100%',
-                  padding: '15px',
+                  padding: '16px 20px',
                   fontSize: '16px',
-                  border: '2px solid #ddd',
-                  borderRadius: '5px',
-                  resize: 'vertical'
+                  border: '2px solid #f1f5f9',
+                  borderRadius: '16px',
+                  background: '#f8fafc',
+                  transition: 'all 0.3s ease',
+                  resize: 'vertical',
+                  fontFamily: 'inherit'
                 }}
               />
             </div>
@@ -268,18 +287,22 @@ const WorkingDashboard: React.FC = () => {
                 type="submit"
                 disabled={loading}
                 style={{
-                  backgroundColor: loading ? '#6c757d' : '#28a745',
+                  background: loading ? 
+                    'linear-gradient(135deg, #9ca3af 0%, #6b7280 100%)' : 
+                    'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)',
                   color: 'white',
-                  padding: '15px 40px',
-                  fontSize: '18px',
+                  padding: '18px 32px',
+                  fontSize: '16px',
                   border: 'none',
-                  borderRadius: '8px',
+                  borderRadius: '16px',
                   cursor: loading ? 'not-allowed' : 'pointer',
-                  fontWeight: 'bold',
-                  marginRight: '10px'
+                  fontWeight: '600',
+                  marginRight: '10px',
+                  boxShadow: loading ? 'none' : '0 8px 24px rgba(14, 165, 233, 0.3)',
+                  transition: 'all 0.3s ease'
                 }}
               >
-                {loading ? '⏳ Processing...' : '🚀 Process Discharge Planning'}
+                {loading ? 'Processing...' : 'Process Discharge Planning'}
               </button>
 
               {results && (
@@ -287,16 +310,18 @@ const WorkingDashboard: React.FC = () => {
                   type="button"
                   onClick={clearResults}
                   style={{
-                    backgroundColor: '#6c757d',
+                    background: 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)',
                     color: 'white',
-                    padding: '15px 30px',
+                    padding: '18px 32px',
                     fontSize: '16px',
                     border: 'none',
-                    borderRadius: '8px',
-                    cursor: 'pointer'
+                    borderRadius: '16px',
+                    cursor: 'pointer',
+                    fontWeight: '600',
+                    transition: 'all 0.3s ease'
                   }}
                 >
-                  🔄 Clear & Start New
+                  Clear & Start New
                 </button>
               )}
             </div>
@@ -306,17 +331,20 @@ const WorkingDashboard: React.FC = () => {
         {/* Results Section */}
         {results && (
           <div style={{
-            backgroundColor: 'white',
-            padding: '30px',
-            borderRadius: '10px',
-            border: '2px solid #28a745',
+            background: 'rgba(255, 255, 255, 0.95)',
+            backdropFilter: 'blur(20px)',
+            padding: '32px',
+            borderRadius: '20px',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
             marginBottom: '20px'
           }}>
             <h2 style={{
-              color: '#28a745',
-              marginBottom: '20px'
+              color: '#1e293b',
+              marginBottom: '20px',
+              fontWeight: '700'
             }}>
-              ✅ Discharge Planning Results
+              Discharge Planning Results
             </h2>
             
             {/* Routing Decision */}
@@ -341,8 +369,8 @@ const WorkingDashboard: React.FC = () => {
             {/* Agent Responses */}
             {results.agent_responses && results.agent_responses.length > 0 && (
               <div>
-                <h3 style={{ color: '#28a745', marginBottom: '15px' }}>
-                  🤖 Agent Recommendations
+                <h3 style={{ color: '#1e293b', marginBottom: '15px', fontWeight: '700' }}>
+                  Agent Recommendations
                 </h3>
                 {results.agent_responses.map((response: any, index: number) => (
                   <div key={index} style={{
@@ -352,7 +380,7 @@ const WorkingDashboard: React.FC = () => {
                     marginBottom: '15px',
                     border: '1px solid #dee2e6'
                   }}>
-                    <h4 style={{ color: '#007bff', marginBottom: '10px' }}>
+                    <h4 style={{ color: '#0ea5e9', marginBottom: '10px', fontWeight: '600' }}>
                       {response.agent_type || `Agent ${index + 1}`}
                     </h4>
                     

@@ -393,7 +393,7 @@ const ManageData: React.FC = () => {
                 <Row>
                   {patients.map((patient, index) => (
                     <Col md={6} lg={4} key={index} className="mb-3">
-                      <Card className="h-100 border-start border-4" style={{ borderLeftColor: '#28a745' }}>
+                      <Card className="h-100 border-start border-4" style={{ borderLeftColor: '#0ea5e9' }}>
                         <Card.Body>
                           <div className="d-flex justify-content-between align-items-start mb-2">
                             <Card.Title className="h6 mb-0">

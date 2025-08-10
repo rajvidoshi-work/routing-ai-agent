@@ -172,13 +172,13 @@ const EnhancedDashboard: React.FC = () => {
         backButtonText="← Back to Patient Details"
         backButtonPath="/patient-details"
       />
-      <div className="container-fluid" style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+      <div className="container-fluid" style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #e8f4fd 0%, #f0f9ff 100%)' }}>
       <style>{spinnerCSS}</style>
       
       <div className="row justify-content-center align-items-center min-vh-100">
         <div className="col-md-8 col-lg-6">
           <div className="card shadow-lg border-0" style={{ borderRadius: '20px', background: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(20px)' }}>
-            <div className="card-header text-center py-4" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', borderRadius: '20px 20px 0 0', border: 'none' }}>
+            <div className="card-header text-center py-4" style={{ background: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)', borderRadius: '20px 20px 0 0', border: 'none' }}>
               <h2 className="text-white mb-0" style={{ fontWeight: '700' }}>
                 <i className="fas fa-hospital-user me-3"></i>
                 Discharge Planning Dashboard
@@ -241,7 +241,7 @@ const EnhancedDashboard: React.FC = () => {
                     style={{ 
                       borderRadius: '15px', 
                       padding: '15px',
-                      background: loading ? '#6c757d' : 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
+                      background: loading ? '#6c757d' : 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)',
                       border: 'none',
                       transition: 'all 0.3s ease'
                     }}
