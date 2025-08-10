@@ -990,174 +990,35 @@ const PharmacyOrderForm: React.FC<PharmacyOrderFormProps> = () => {
                   fontSize: '16px',
                   fontWeight: '600'
                 }}>
-                  <span style={{ fontSize: '24px' }}>✅</span>
-                  Pharmacy Order Form Generated Successfully!
+                  Pharmacy Order Form Submitted Successfully!
                 </div>
 
-                {/* Display Pharmacy-specific results */}
-                {pharmacyForm.result && (
-                  <div style={resultCardStyle}>
-                    <h3 style={{ 
-                      color: '#dc2626', 
-                      marginBottom: '20px',
-                      fontSize: '18px',
+                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '24px' }}>
+                  <button
+                    onClick={() => {
+                      // Future: Generate PDF or print functionality
+                      alert('Print/Export functionality - Coming Soon!\n\nThis will allow you to print or export the pharmacy order form.');
+                    }}
+                    style={{
+                      backgroundColor: '#dc2626',
+                      color: 'white',
+                      padding: '16px 32px',
+                      border: 'none',
+                      borderRadius: '16px',
+                      fontSize: '16px',
+                      cursor: 'pointer',
                       fontWeight: '600',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '8px'
-                    }}>
-                      <span style={{ fontSize: '20px' }}>💊</span>
-                      Pharmacy & Medication Recommendations
-                    </h3>
-                    
-                    {pharmacyForm.result.recommendations && (
-                      <div style={{ marginBottom: '20px' }}>
-                        <div style={{ 
-                          fontSize: '14px', 
-                          fontWeight: '600', 
-                          color: '#374151',
-                          marginBottom: '10px'
-                        }}>
-                          Medication Recommendations:
-                        </div>
-                        <ul style={{ margin: 0, paddingLeft: '20px', listStyle: 'none' }}>
-                          {pharmacyForm.result.recommendations.map((rec: string, i: number) => (
-                            <li key={i} style={{ 
-                              marginBottom: '8px',
-                              fontSize: '14px',
-                              lineHeight: '1.6',
-                              color: '#4b5563',
-                              position: 'relative',
-                              paddingLeft: '20px'
-                            }}>
-                              <span style={{ 
-                                position: 'absolute', 
-                                left: '0', 
-                                color: '#dc2626',
-                                fontWeight: '600'
-                              }}>•</span>
-                              {rec}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-
-                    {pharmacyForm.result.next_steps && (
-                      <div style={{ marginBottom: '20px' }}>
-                        <div style={{ 
-                          fontSize: '14px', 
-                          fontWeight: '600', 
-                          color: '#374151',
-                          marginBottom: '10px'
-                        }}>
-                          Next Steps:
-                        </div>
-                        <ul style={{ margin: 0, paddingLeft: '20px', listStyle: 'none' }}>
-                          {pharmacyForm.result.next_steps.map((step: string, i: number) => (
-                            <li key={i} style={{ 
-                              marginBottom: '8px',
-                              fontSize: '14px',
-                              lineHeight: '1.6',
-                              color: '#4b5563',
-                              position: 'relative',
-                              paddingLeft: '20px'
-                            }}>
-                              <span style={{ 
-                                position: 'absolute', 
-                                left: '0', 
-                                color: '#f59e0b',
-                                fontWeight: '600'
-                              }}>•</span>
-                              {step}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-
-                    {pharmacyForm.result.external_referrals && (
-                      <div style={{ marginBottom: '20px' }}>
-                        <div style={{ 
-                          fontSize: '14px', 
-                          fontWeight: '600', 
-                          color: '#374151',
-                          marginBottom: '10px'
-                        }}>
-                          External Referrals:
-                        </div>
-                        <ul style={{ margin: 0, paddingLeft: '20px', listStyle: 'none' }}>
-                          {pharmacyForm.result.external_referrals.map((ref: string, i: number) => (
-                            <li key={i} style={{ 
-                              marginBottom: '8px',
-                              fontSize: '14px',
-                              lineHeight: '1.6',
-                              color: '#4b5563',
-                              position: 'relative',
-                              paddingLeft: '20px'
-                            }}>
-                              <span style={{ 
-                                position: 'absolute', 
-                                left: '0', 
-                                color: '#dc2626',
-                                fontWeight: '600'
-                              }}>•</span>
-                              {ref}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-
-                    <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
-                      <button
-                        onClick={() => setPharmacyForm((prev: any) => ({
-                          ...prev,
-                          submitted: false
-                        }))}
-                        style={{
-                          backgroundColor: '#6b7280',
-                          color: 'white',
-                          padding: '10px 20px',
-                          border: 'none',
-                          borderRadius: '8px',
-                          fontSize: '14px',
-                          cursor: 'pointer',
-                          fontWeight: '500',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px'
-                        }}
-                      >
-                        <span>🔄</span>
-                        Edit Form
-                      </button>
-
-                      <button
-                        onClick={() => {
-                          // Future: Generate PDF or print functionality
-                          alert('Print/Export functionality - Coming Soon!\n\nThis will allow you to print or export the pharmacy order form.');
-                        }}
-                        style={{
-                          backgroundColor: '#dc2626',
-                          color: 'white',
-                          padding: '10px 20px',
-                          border: 'none',
-                          borderRadius: '8px',
-                          fontSize: '14px',
-                          cursor: 'pointer',
-                          fontWeight: '500',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px'
-                        }}
-                      >
-                        <span>🖨️</span>
-                        Print Order
-                      </button>
-                    </div>
-                  </div>
-                )}
+                      gap: '8px',
+                      boxShadow: '0 8px 32px rgba(220, 38, 38, 0.3)',
+                      transition: 'all 0.3s ease'
+                    }}
+                  >
+                    <span>🖨️</span>
+                    Print Order
+                  </button>
+                </div>
               </div>
             )}
 
