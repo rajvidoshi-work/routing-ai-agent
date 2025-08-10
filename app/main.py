@@ -4,6 +4,10 @@ from fastapi.responses import JSONResponse
 import os
 from typing import List
 import json
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 from app.models import (
     PatientData, ComprehensivePatientData, CaregiverInput, RoutingRequest, RoutingDecision, 
@@ -160,8 +164,8 @@ async def process_nursing_agent(request: RoutingRequest):
     """Process patient case through nursing agent."""
     
     try:
-        # Get patient data from cache
-        patient_data = data_service.get_patient(request.patient_data.patient_id)
+        # Use patient data from request directly (enhanced nursing agent handles missing fields)
+        patient_data = request.patient_data
         
         response = await ai_service.process_nursing_agent(
             patient_data,

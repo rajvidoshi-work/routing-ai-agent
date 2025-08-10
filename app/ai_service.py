@@ -145,111 +145,279 @@ class AIService:
             return self._fallback_routing(patient_data, caregiver_input)
     
     async def process_nursing_agent(self, patient_data, caregiver_input: CaregiverInput) -> AgentResponse:
-        """Process patient case through nursing agent."""
-        
-        prompt = f"""
-        You are a HOME HEALTH NURSING coordination agent for hospital discharge planning. 
-        
-        SCOPE: ONLY hospital-to-home transition nursing needs. NO inpatient management.
-        
-        Patient Discharge Profile:
-        - Patient: {patient_data.name} (ID: {patient_data.patient_id})
-        - Primary Diagnosis: {patient_data.primary_icu_diagnosis}
-        - Secondary Diagnoses: {patient_data.secondary_diagnoses or 'None'}
-        - Discharge Date: {patient_data.icu_discharge_date or 'Not specified'}
-        - Allergies: {patient_data.allergies or 'None'}
-        
-        HOME NURSING REQUIREMENTS:
-        - Skilled Nursing Needed: {patient_data.skilled_nursing_needed or 'Not specified'}
-        - Visit Frequency: {patient_data.nursing_visit_frequency or 'Not specified'}
-        - Care Type: {patient_data.type_of_nursing_care or 'Not specified'}
-        - Emergency Procedures: {patient_data.emergency_contact_procedure or 'None specified'}
-        
-        MEDICATION TRANSITION:
-        - Current Medication: {patient_data.medication or 'None'}
-        - Route: {patient_data.route or 'Not specified'}
-        - Vascular Access: {patient_data.vascular_access or 'None'}
-        
-        DISCHARGE PLANNING CONCERN: {caregiver_input.primary_concern}
-        
-        FOCUS AREAS (0-14 days post-discharge):
-        1. Home health nursing referrals (485/plan of care)
-        2. Wound care protocols for home setting
-        3. Vital signs monitoring schedule
-        4. Caregiver education and training
-        5. Follow-up appointment coordination
-        
-        EXCLUDE: Inpatient procedures, hospital medication titration, ICU workflows
-        
-        IMPORTANT: Respond ONLY with a valid JSON object for HOME HEALTH TRANSITION:
-        {{
-            "structured_data": {{
-                "home_health_referral": true,
-                "visit_frequency": "weekly",
-                "care_plan_485_required": true,
-                "wound_care_protocol": false,
-                "vital_signs_monitoring": true,
-                "caregiver_education_needed": true,
-                "first_visit_target": "within 24 hours of discharge"
-            }},
-            "recommendations": [
-                "Initiate home health nursing referral with 485 plan of care",
-                "Schedule first nursing visit within 24 hours of discharge",
-                "Provide caregiver education on medication administration"
-            ],
-            "next_steps": [
-                "Complete home health agency referral form",
-                "Schedule follow-up appointment with primary care physician",
-                "Coordinate with discharge planner for timing"
-            ],
-            "external_referrals": ["Home Health Agency", "Primary Care Physician"]
-        }}
-        
-        Focus ONLY on hospital-to-home transition. No inpatient recommendations.
-        """
+        """Process patient case through enhanced nursing agent with RAG-based nurse recommendations."""
         
         try:
-            response = await self._call_ai(prompt)
-            result = json.loads(response)
-        except (json.JSONDecodeError, Exception) as e:
-            print(f"Nursing agent error: {e}")
-            # Create discharge-focused fallback response
-            result = {
-                "structured_data": {
-                    "home_health_referral": True,
-                    "visit_frequency": getattr(patient_data, 'nursing_visit_frequency', 'weekly') or 'weekly',
-                    "care_plan_485_required": True,
-                    "wound_care_protocol": "wound" in caregiver_input.primary_concern.lower(),
-                    "vital_signs_monitoring": True,
-                    "caregiver_education_needed": True,
+            # Import the enhanced nursing agent
+            from app.enhanced_nursing_agent import get_nurse_recommendations_for_patient
+            
+            # Prepare patient context for nurse matching - handle missing fields gracefully
+            patient_context = {
+                'name': getattr(patient_data, 'name', 'Unknown Patient'),
+                'patient_id': getattr(patient_data, 'patient_id', 'UNKNOWN'),
+                'age': getattr(patient_data, 'age', None) or getattr(patient_data, 'date_of_birth', None),
+                'gender': getattr(patient_data, 'gender', 'Unknown'),
+                'primary_diagnosis': getattr(patient_data, 'primary_icu_diagnosis', None) or getattr(patient_data, 'diagnosis', 'Not specified'),
+                'secondary_diagnoses': getattr(patient_data, 'secondary_diagnoses', None),
+                'skilled_nursing_needed': getattr(patient_data, 'skilled_nursing_needed', None),
+                'type_of_nursing_care': getattr(patient_data, 'type_of_nursing_care', None),
+                'equipment_needed': getattr(patient_data, 'equipment_needed', None),
+                'medication': getattr(patient_data, 'medication', None),
+                'route': getattr(patient_data, 'route', None),
+                'vascular_access': getattr(patient_data, 'vascular_access', None),
+                'address': getattr(patient_data, 'address', None),
+                'insurance_coverage_status': getattr(patient_data, 'insurance_coverage_status', None),
+                'special_instructions': getattr(patient_data, 'special_instructions', None),
+                'allergies': getattr(patient_data, 'allergies', None),
+                'primary_concern': caregiver_input.primary_concern
+            }
+            
+            print(f"🔍 Patient context for nurse matching: {patient_context}")
+            
+            # Get nurse recommendations
+            nurse_recommendations = get_nurse_recommendations_for_patient(patient_context, top_n=5)
+            print(f"👩‍⚕️ Nurse recommendations result: {nurse_recommendations}")
+            
+            # Generate nursing care plan using LLM
+            care_plan_prompt = f"""
+            You are a HOME HEALTH NURSING coordination agent for hospital discharge planning. 
+            
+            SCOPE: ONLY hospital-to-home transition nursing needs. NO inpatient management.
+            
+            Patient Discharge Profile:
+            - Patient: {patient_context['name']} (ID: {patient_context['patient_id']})
+            - Primary Diagnosis: {patient_context['primary_diagnosis']}
+            - Secondary Diagnoses: {patient_context.get('secondary_diagnoses', 'None')}
+            - Discharge Date: {getattr(patient_data, 'icu_discharge_date', 'Not specified')}
+            - Allergies: {patient_context.get('allergies', 'None')}
+            
+            HOME NURSING REQUIREMENTS:
+            - Skilled Nursing Needed: {patient_context.get('skilled_nursing_needed', 'Not specified')}
+            - Visit Frequency: {getattr(patient_data, 'nursing_visit_frequency', 'Not specified')}
+            - Care Type: {patient_context.get('type_of_nursing_care', 'Not specified')}
+            - Emergency Procedures: {getattr(patient_data, 'emergency_contact_procedure', 'None specified')}
+            
+            MEDICATION TRANSITION:
+            - Current Medication: {patient_context.get('medication', 'None')}
+            - Route: {patient_context.get('route', 'Not specified')}
+            - Vascular Access: {patient_context.get('vascular_access', 'None')}
+            
+            DISCHARGE PLANNING CONCERN: {caregiver_input.primary_concern}
+            
+            FOCUS AREAS (0-14 days post-discharge):
+            1. Home health nursing referrals (485/plan of care)
+            2. Wound care protocols for home setting
+            3. Vital signs monitoring schedule
+            4. Caregiver education and training
+            5. Follow-up appointment coordination
+            
+            EXCLUDE: Inpatient procedures, hospital medication titration, ICU workflows
+            
+            IMPORTANT: Respond ONLY with a valid JSON object for HOME HEALTH TRANSITION:
+            {{
+                "structured_data": {{
+                    "home_health_referral": true,
+                    "visit_frequency": "weekly",
+                    "care_plan_485_required": true,
+                    "wound_care_protocol": false,
+                    "vital_signs_monitoring": true,
+                    "caregiver_education_needed": true,
                     "first_visit_target": "within 24 hours of discharge"
-                },
+                }},
                 "recommendations": [
                     "Initiate home health nursing referral with 485 plan of care",
                     "Schedule first nursing visit within 24 hours of discharge",
-                    "Coordinate wound care protocol for home setting" if "wound" in caregiver_input.primary_concern.lower() else "Provide medication administration training for home care",
-                    "Establish caregiver education plan for discharge transition"
+                    "Provide caregiver education on medication administration"
                 ],
                 "next_steps": [
-                    "Complete home health agency referral form before discharge",
-                    "Schedule follow-up appointment with primary care physician within 7 days",
-                    "Coordinate discharge timing with nursing agency",
-                    "Provide emergency contact procedures to family"
+                    "Contact home health agency for intake",
+                    "Schedule first nursing visit",
+                    "Prepare discharge education materials"
                 ],
-                "external_referrals": ["Home Health Agency", "Primary Care Physician"]
+                "external_referrals": [
+                    "Home Health Agency - for skilled nursing visits",
+                    "Primary Care Provider - for follow-up coordination"
+                ]
+            }}
+            """
+            
+            # Get care plan from LLM
+            if self.ai_provider == "google" and self.client:
+                try:
+                    response = self.client.generate_content(care_plan_prompt)
+                    care_plan_text = response.text if response else ""
+                except Exception as e:
+                    print(f"⚠️ Google AI error in nursing agent: {e}")
+                    care_plan_text = ""
+            else:
+                care_plan_text = ""
+            
+            # Parse care plan or use fallback
+            if care_plan_text:
+                try:
+                    # Extract JSON from response
+                    json_start = care_plan_text.find('{')
+                    json_end = care_plan_text.rfind('}') + 1
+                    if json_start != -1 and json_end > json_start:
+                        care_plan_json = json.loads(care_plan_text[json_start:json_end])
+                    else:
+                        raise ValueError("No JSON found")
+                except:
+                    care_plan_json = self._get_fallback_nursing_plan(patient_data)
+            else:
+                care_plan_json = self._get_fallback_nursing_plan(patient_data)
+            
+            # Create form data with nurse recommendations
+            form_data = {
+                "form_id": f"nursing_order_{patient_context['patient_id']}",
+                "title": "Home Health Nursing Order Form",
+                "recipient": "Home Health Agency",
+                "fields": [
+                    {
+                        "field_name": "patient_name",
+                        "field_type": "text",
+                        "label": "Patient Name",
+                        "value": patient_context['name'],
+                        "required": True
+                    },
+                    {
+                        "field_name": "primary_diagnosis",
+                        "field_type": "text",
+                        "label": "Primary Diagnosis",
+                        "value": patient_context['primary_diagnosis'],
+                        "required": True
+                    },
+                    {
+                        "field_name": "skilled_nursing_needed",
+                        "field_type": "textarea",
+                        "label": "Skilled Nursing Services Needed",
+                        "value": patient_context.get('skilled_nursing_needed', ''),
+                        "required": True
+                    },
+                    {
+                        "field_name": "visit_frequency",
+                        "field_type": "select",
+                        "label": "Visit Frequency",
+                        "value": care_plan_json.get("structured_data", {}).get("visit_frequency", "weekly"),
+                        "options": ["daily", "3x/week", "weekly", "bi-weekly", "monthly"],
+                        "required": True
+                    },
+                    {
+                        "field_name": "first_visit_target",
+                        "field_type": "text",
+                        "label": "First Visit Target",
+                        "value": care_plan_json.get("structured_data", {}).get("first_visit_target", "within 24 hours"),
+                        "required": True
+                    }
+                ],
+                "nurse_recommendations": nurse_recommendations
+            }
+            
+            print(f"📋 Final form data with nurse recommendations: {form_data}")
+            
+            return AgentResponse(
+                agent_type=AgentType.NURSING,
+                patient_id=patient_context['patient_id'],
+                structured_data=care_plan_json.get("structured_data", {}),
+                form_data=form_data,
+                recommendations=care_plan_json.get("recommendations", []),
+                next_steps=care_plan_json.get("next_steps", []),
+                external_referrals=care_plan_json.get("external_referrals", [])
+            )
+            
+        except Exception as e:
+            print(f"❌ Error in enhanced nursing agent: {e}")
+            import traceback
+            traceback.print_exc()
+            # Fallback to basic nursing response
+            return self._get_fallback_nursing_response(patient_data, caregiver_input)
+    
+    def _get_fallback_nursing_plan(self, patient_data) -> Dict[str, Any]:
+        """Fallback nursing care plan when LLM is unavailable."""
+        return {
+            "structured_data": {
+                "home_health_referral": True,
+                "visit_frequency": "weekly",
+                "care_plan_485_required": True,
+                "wound_care_protocol": "wound" in (patient_data.skilled_nursing_needed or "").lower(),
+                "vital_signs_monitoring": True,
+                "caregiver_education_needed": True,
+                "first_visit_target": "within 24 hours of discharge"
+            },
+            "recommendations": [
+                "Initiate home health nursing referral with 485 plan of care",
+                "Schedule first nursing visit within 24 hours of discharge",
+                "Provide caregiver education on care procedures",
+                "Coordinate with primary care provider for follow-up"
+            ],
+            "next_steps": [
+                "Contact home health agency for intake assessment",
+                "Schedule first nursing visit",
+                "Prepare discharge education materials",
+                "Verify insurance authorization for home health services"
+            ],
+            "external_referrals": [
+                "Home Health Agency - for skilled nursing visits",
+                "Primary Care Provider - for follow-up coordination"
+            ]
+        }
+    
+    def _get_fallback_nursing_response(self, patient_data, caregiver_input: CaregiverInput) -> AgentResponse:
+        """Fallback nursing response when enhanced agent fails."""
+        try:
+            # Try to get nurse recommendations even in fallback
+            from app.enhanced_nursing_agent import get_nurse_recommendations_for_patient
+            
+            patient_context = {
+                'name': getattr(patient_data, 'name', 'Unknown Patient'),
+                'patient_id': getattr(patient_data, 'patient_id', 'UNKNOWN'),
+                'primary_diagnosis': getattr(patient_data, 'primary_icu_diagnosis', None) or getattr(patient_data, 'diagnosis', 'Not specified'),
+                'skilled_nursing_needed': getattr(patient_data, 'skilled_nursing_needed', None),
+                'primary_concern': caregiver_input.primary_concern
+            }
+            
+            nurse_recommendations = get_nurse_recommendations_for_patient(patient_context, top_n=3)
+        except Exception as e:
+            print(f"❌ Error getting nurse recommendations in fallback: {e}")
+            nurse_recommendations = {
+                "success": False,
+                "message": "Enhanced nurse matching temporarily unavailable",
+                "recommendations": []
             }
         
-        # Generate editable form for nursing partners
-        form_data = self._generate_nursing_form(patient_data, result)
+        fallback_plan = self._get_fallback_nursing_plan(patient_data)
+        
+        form_data = {
+            "form_id": f"nursing_order_{getattr(patient_data, 'patient_id', 'UNKNOWN')}",
+            "title": "Home Health Nursing Order Form",
+            "recipient": "Home Health Agency",
+            "fields": [
+                {
+                    "field_name": "patient_name",
+                    "field_type": "text",
+                    "label": "Patient Name",
+                    "value": getattr(patient_data, 'name', 'Unknown Patient'),
+                    "required": True
+                },
+                {
+                    "field_name": "primary_diagnosis",
+                    "field_type": "text",
+                    "label": "Primary Diagnosis",
+                    "value": getattr(patient_data, 'primary_icu_diagnosis', None) or getattr(patient_data, 'diagnosis', 'Not specified'),
+                    "required": True
+                }
+            ],
+            "nurse_recommendations": nurse_recommendations
+        }
         
         return AgentResponse(
             agent_type=AgentType.NURSING,
-            patient_id=patient_data.patient_id,
-            structured_data=result.get("structured_data", {}),
+            patient_id=getattr(patient_data, 'patient_id', 'UNKNOWN'),
+            structured_data=fallback_plan["structured_data"],
             form_data=form_data,
-            recommendations=result.get("recommendations", []),
-            next_steps=result.get("next_steps", []),
-            external_referrals=result.get("external_referrals", [])
+            recommendations=fallback_plan["recommendations"],
+            next_steps=fallback_plan["next_steps"],
+            external_referrals=fallback_plan["external_referrals"]
         )
     
     async def process_dme_agent(self, patient_data, caregiver_input: CaregiverInput) -> AgentResponse:
