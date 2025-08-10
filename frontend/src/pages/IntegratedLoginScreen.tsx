@@ -20,11 +20,12 @@ const IntegratedLoginScreen: React.FC<IntegratedLoginScreenProps> = () => {
 
   // Demo credentials - in a real app, this would be handled by a backend API
   const validCredentials = [
-    { userId: 'admin', password: 'admin123' },
-    { userId: 'doctor', password: 'doctor123' },
-    { userId: 'nurse', password: 'nurse123' },
-    { userId: 'demo', password: 'demo' },
-    { userId: 'test', password: 'test' }
+    { userId: 'demo', password: 'DemoUser2024@' },
+    { userId: 'Admin', password: 'password' },
+    { userId: 'admin', password: 'AdonixAdmin2024!' },
+    { userId: 'doctor', password: 'MedDoc2024#' },
+    { userId: 'nurse', password: 'NurseSecure2024$' },
+    { userId: 'test', password: 'TestSecure2024%' }
   ];
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -76,12 +77,12 @@ const IntegratedLoginScreen: React.FC<IntegratedLoginScreenProps> = () => {
 
   const handleForgotPassword = (e: React.MouseEvent) => {
     e.preventDefault();
-    alert('Demo credentials:\n\nUser ID: demo\nPassword: demo\n\nOr try:\nUser ID: admin\nPassword: admin123');
+    alert('Demo credentials:\n\nUser ID: demo\nPassword: DemoUser2024@\n\nOr try:\nUser ID: Admin\nPassword: password');
   };
 
   const handleNeedHelp = (e: React.MouseEvent) => {
     e.preventDefault();
-    alert('Demo Application Help:\n\n1. Use demo/demo for quick access\n2. Or admin/admin123 for admin access\n3. This is a demonstration of the healthcare discharge planning system');
+    alert('Demo Application Help:\n\n1. Use demo/DemoUser2024@ for quick access\n2. Or Admin/password for admin access\n3. This is a demonstration of the healthcare discharge planning system');
   };
 
   return (
@@ -269,10 +270,19 @@ const IntegratedLoginScreen: React.FC<IntegratedLoginScreenProps> = () => {
             fontSize: '12px',
             color: '#475569',
             textAlign: 'center',
-            margin: '0',
+            margin: '0 0 8px 0',
             fontFamily: 'monospace'
           }}>
-            User ID: <strong>demo</strong> | Password: <strong>demo</strong>
+            User ID: <strong>demo</strong> | Password: <strong>DemoUser2024@</strong>
+          </p>
+          <p style={{
+            fontSize: '10px',
+            color: '#64748b',
+            textAlign: 'center',
+            margin: '0',
+            fontStyle: 'italic'
+          }}>
+            Note: Secure passwords used to avoid browser security warnings
           </p>
         </div>
       </div>

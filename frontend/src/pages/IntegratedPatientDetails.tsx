@@ -108,7 +108,7 @@ const IntegratedPatientDetails: React.FC<IntegratedPatientDetailsProps> = () => 
     };
 
     // Navigate to the discharge planning dashboard with pre-filled patient data
-    navigate('/dashboard', { 
+    navigate('/enhanced-dashboard', { 
       state: { 
         prefilledPatient: patientData,
         fromPatientDetails: true 
