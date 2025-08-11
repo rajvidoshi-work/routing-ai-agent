@@ -25,10 +25,9 @@ RUN mkdir -p /app/data
 
 # Set environment variables
 ENV PYTHONPATH=/app
-ENV PORT=8000
 
-# Expose port
-EXPOSE 8000
+# Expose port (Railway will set PORT dynamically)
+EXPOSE $PORT
 
-# Run the application
-CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Run the application (Railway will override this with startCommand)
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]

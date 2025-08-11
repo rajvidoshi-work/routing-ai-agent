@@ -2,13 +2,22 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import os
+import sys
 from typing import List
 import json
 from dotenv import load_dotenv
 
+# Add startup logging
+print("🚀 Starting Routing AI Agent API...")
+print(f"Python version: {sys.version}")
+print(f"Working directory: {os.getcwd()}")
+print(f"PYTHONPATH: {os.getenv('PYTHONPATH', 'not set')}")
+print(f"PORT: {os.getenv('PORT', 'not set')}")
+
 # Load environment variables (optional for production)
 try:
     load_dotenv()
+    print("✅ .env file loaded successfully")
 except Exception as e:
     print(f"Note: .env file not found or couldn't be loaded: {e}")
     print("Using environment variables from system/Railway")
@@ -20,12 +29,16 @@ from app.models import (
 from app.ai_service import AIService
 from app.data_service import DataService
 
+print("✅ All imports successful")
+
 # Initialize FastAPI app
 app = FastAPI(
     title="Routing AI Agent - Discharge Planning API",
     description="AI-powered discharge planning API for hospital-to-home transitions",
     version="2.0.0"
 )
+
+print("✅ FastAPI app initialized")
 
 # Add CORS middleware for React frontend
 app.add_middleware(
@@ -41,18 +54,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+print("✅ CORS middleware configured")
+
 # Initialize services with error handling
 try:
     ai_service = AIService()
     data_service = DataService()
     services_initialized = True
     services_error = None
+    print("✅ Services initialized successfully")
 except Exception as e:
-    print(f"Warning: Services initialization failed: {e}")
+    print(f"⚠️ Services initialization failed: {e}")
     ai_service = None
     data_service = None
     services_initialized = False
     services_error = str(e)
+
+print("🎉 Application startup complete!")
 
 @app.get("/")
 async def root():
