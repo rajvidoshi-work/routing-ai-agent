@@ -277,7 +277,7 @@ const NursingOrderForm: React.FC<NursingOrderFormProps> = () => {
         <div style={headerStyle}>
           <div style={{ maxWidth: '800px', margin: '0 auto' }}>
             <h1 style={titleStyle}>
-              Nursing Order Form
+              Nursing Recommendations
             </h1>
           </div>
         </div>
@@ -309,7 +309,7 @@ const NursingOrderForm: React.FC<NursingOrderFormProps> = () => {
                 alignItems: 'center',
                 gap: '10px'
               }}>
-                🏥 Home Health Nursing Order Form
+                🏥 Home Health Nursing Recommendations
               </h2>
               <p style={{
                 color: '#6b7280',
