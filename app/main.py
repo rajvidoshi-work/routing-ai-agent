@@ -37,22 +37,35 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize services
-ai_service = AIService()
-data_service = DataService()
+# Initialize services with error handling
+try:
+    ai_service = AIService()
+    data_service = DataService()
+    services_initialized = True
+    services_error = None
+except Exception as e:
+    print(f"Warning: Services initialization failed: {e}")
+    ai_service = None
+    data_service = None
+    services_initialized = False
+    services_error = str(e)
 
 @app.get("/")
 async def root():
-    """Root endpoint - API information."""
+    """Root endpoint - API information and health status."""
     return {
         "message": "Routing AI Agent - Discharge Planning API",
         "version": "2.0.0",
         "status": "operational",
+        "health": "healthy",
         "endpoints": {
             "health": "/health",
             "docs": "/docs",
             "data_status": "/api/data-status",
             "patients": "/api/patients",
+            "process_complete_case": "/api/process-complete-case"
+        }
+    }
             "available_files": "/api/available-files",
             "process_complete_case": "/api/process-complete-case"
         },
@@ -61,8 +74,42 @@ async def root():
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint."""
-    return {"status": "healthy", "service": "routing-ai-agent-api", "version": "2.0.0"}
+    """Health check endpoint with detailed status."""
+    try:
+        # Test basic functionality
+        import os
+        import sys
+        
+        # Check if required environment variables are set
+        env_status = {
+            "PYTHONPATH": os.getenv("PYTHONPATH", "not_set"),
+            "GOOGLE_API_KEY": "set" if os.getenv("GOOGLE_API_KEY") else "not_set",
+        }
+        
+        # Check if services can be initialized
+        services_status = {
+            "services_initialized": services_initialized,
+            "ai_service": "healthy" if ai_service else "failed",
+            "data_service": "healthy" if data_service else "failed",
+            "services_error": services_error
+        }
+        
+        return {
+            "status": "healthy" if services_initialized else "degraded",
+            "service": "routing-ai-agent-api",
+            "version": "2.0.0",
+            "timestamp": str(os.getenv("RAILWAY_DEPLOYMENT_ID", "local")),
+            "python_version": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
+            "environment": env_status,
+            "services": services_status
+        }
+    except Exception as e:
+        return {
+            "status": "unhealthy",
+            "service": "routing-ai-agent-api",
+            "version": "2.0.0",
+            "error": str(e)
+        }
 
 # Data Management Endpoints
 @app.get("/api/data-status")
