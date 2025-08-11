@@ -19,7 +19,6 @@ COPY app/ ./app/
 COPY sample_excel_files/ ./sample_excel_files/
 COPY *.xlsx ./
 COPY *.csv ./
-COPY .env ./
 
 # Create data directory
 RUN mkdir -p /app/data

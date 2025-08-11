@@ -6,8 +6,12 @@ from typing import List
 import json
 from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv()
+# Load environment variables (optional for production)
+try:
+    load_dotenv()
+except Exception as e:
+    print(f"Note: .env file not found or couldn't be loaded: {e}")
+    print("Using environment variables from system/Railway")
 
 from app.models import (
     PatientData, ComprehensivePatientData, CaregiverInput, RoutingRequest, RoutingDecision, 

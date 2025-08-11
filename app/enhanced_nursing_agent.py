@@ -19,7 +19,11 @@ import pickle
 from dotenv import load_dotenv
 
 # Load environment variables
-load_dotenv()
+# Load environment variables (optional for production)
+try:
+    load_dotenv()
+except Exception as e:
+    print(f"Note: .env file not found in enhanced_nursing_agent: {e}")
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
