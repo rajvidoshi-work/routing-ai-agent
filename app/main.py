@@ -7,20 +7,8 @@ from typing import List
 import json
 from dotenv import load_dotenv
 
-# Add startup logging
-print("🚀 Starting Routing AI Agent API...")
-print(f"Python version: {sys.version}")
-print(f"Working directory: {os.getcwd()}")
-print(f"PYTHONPATH: {os.getenv('PYTHONPATH', 'not set')}")
-print(f"PORT: {os.getenv('PORT', 'not set')}")
-
-# Load environment variables (optional for production)
-try:
-    load_dotenv()
-    print("✅ .env file loaded successfully")
-except Exception as e:
-    print(f"Note: .env file not found or couldn't be loaded: {e}")
-    print("Using environment variables from system/Railway")
+# Load environment variables
+load_dotenv()
 
 from app.models import (
     PatientData, ComprehensivePatientData, CaregiverInput, RoutingRequest, RoutingDecision, 
@@ -29,16 +17,12 @@ from app.models import (
 from app.ai_service import AIService
 from app.data_service import DataService
 
-print("✅ All imports successful")
-
 # Initialize FastAPI app
 app = FastAPI(
     title="Routing AI Agent - Discharge Planning API",
     description="AI-powered discharge planning API for hospital-to-home transitions",
     version="2.0.0"
 )
-
-print("✅ FastAPI app initialized")
 
 # Add CORS middleware for React frontend
 app.add_middleware(
@@ -54,32 +38,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-print("✅ CORS middleware configured")
-
-# Initialize services with error handling
-try:
-    ai_service = AIService()
-    data_service = DataService()
-    services_initialized = True
-    services_error = None
-    print("✅ Services initialized successfully")
-except Exception as e:
-    print(f"⚠️ Services initialization failed: {e}")
-    ai_service = None
-    data_service = None
-    services_initialized = False
-    services_error = str(e)
-
-print("🎉 Application startup complete!")
+# Initialize services
+ai_service = AIService()
+data_service = DataService()
 
 @app.get("/")
 async def root():
-    """Root endpoint - API information and health status."""
+    """Root endpoint - API information."""
     return {
         "message": "Routing AI Agent - Discharge Planning API",
         "version": "2.0.0",
         "status": "operational",
-        "health": "healthy",
         "endpoints": {
             "health": "/health",
             "docs": "/docs",
@@ -96,42 +65,8 @@ async def root():
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint with detailed status."""
-    try:
-        # Test basic functionality
-        import os
-        import sys
-        
-        # Check if required environment variables are set
-        env_status = {
-            "PYTHONPATH": os.getenv("PYTHONPATH", "not_set"),
-            "GOOGLE_API_KEY": "set" if os.getenv("GOOGLE_API_KEY") else "not_set",
-        }
-        
-        # Check if services can be initialized
-        services_status = {
-            "services_initialized": services_initialized,
-            "ai_service": "healthy" if ai_service else "failed",
-            "data_service": "healthy" if data_service else "failed",
-            "services_error": services_error
-        }
-        
-        return {
-            "status": "healthy" if services_initialized else "degraded",
-            "service": "routing-ai-agent-api",
-            "version": "2.0.0",
-            "timestamp": str(os.getenv("RAILWAY_DEPLOYMENT_ID", "local")),
-            "python_version": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
-            "environment": env_status,
-            "services": services_status
-        }
-    except Exception as e:
-        return {
-            "status": "unhealthy",
-            "service": "routing-ai-agent-api",
-            "version": "2.0.0",
-            "error": str(e)
-        }
+    """Health check endpoint."""
+    return {"status": "healthy", "service": "routing-ai-agent-api", "version": "2.0.0"}
 
 # Data Management Endpoints
 @app.get("/api/data-status")

@@ -1,0 +1,19 @@
+# AWS Lambda Dockerfile for FastAPI
+FROM public.ecr.aws/lambda/python:3.11
+
+# Copy requirements and install dependencies
+COPY requirements.txt ${LAMBDA_TASK_ROOT}
+RUN pip install -r requirements.txt
+
+# Copy application code
+COPY app/ ${LAMBDA_TASK_ROOT}/app/
+COPY sample_excel_files/ ${LAMBDA_TASK_ROOT}/sample_excel_files/
+COPY *.xlsx ${LAMBDA_TASK_ROOT}/
+COPY *.csv ${LAMBDA_TASK_ROOT}/
+COPY .env ${LAMBDA_TASK_ROOT}/
+
+# Copy Lambda handler
+COPY lambda_handler.py ${LAMBDA_TASK_ROOT}
+
+# Set the CMD to your handler
+CMD ["lambda_handler.handler"]
