@@ -17,8 +17,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY app/ ./app/
 COPY sample_excel_files/ ./sample_excel_files/
+COPY start.py ./
+COPY railway-start.sh ./
 COPY *.xlsx ./
 COPY *.csv ./
+
+# Make shell script executable
+RUN chmod +x railway-start.sh
 
 # Create data directory
 RUN mkdir -p /app/data
@@ -29,5 +34,5 @@ ENV PYTHONPATH=/app
 # Expose port (Railway will set PORT dynamically)
 EXPOSE $PORT
 
-# Run the application (Railway will override this with startCommand)
-CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+# Run the application using our startup script
+CMD ["python", "start.py"]
