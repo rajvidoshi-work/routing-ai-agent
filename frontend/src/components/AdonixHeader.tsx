@@ -22,7 +22,7 @@ const AdonixHeader: React.FC<AdonixHeaderProps> = ({
   const handleLogout = () => {
     if (window.confirm('Are you sure you want to logout?')) {
       logout();
-      navigate('/login');
+      // AuthContext will handle the redirect to login page
     }
   };
 

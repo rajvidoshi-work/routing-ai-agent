@@ -71,10 +71,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = () => {
     setIsAuthenticated(false);
     setUserId(null);
+    
+    // Clear all authentication-related localStorage items
     localStorage.removeItem('isAuthenticated');
     localStorage.removeItem('userId');
     localStorage.removeItem('loginTime');
     localStorage.removeItem('rememberMe');
+    
+    // Clear any other session-related data
+    sessionStorage.clear();
+    
+    // Force a page reload to ensure complete session cleanup
+    window.location.href = '/login';
   };
 
   const value = {

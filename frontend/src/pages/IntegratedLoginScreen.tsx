@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useScrollToTop } from '../hooks/useScrollToTop';
+import { useAuth } from '../contexts/AuthContext';
 import './LoginScreen.css';
 
 interface IntegratedLoginScreenProps {}
 
 const IntegratedLoginScreen: React.FC<IntegratedLoginScreenProps> = () => {
   const navigate = useNavigate();
+  const { login, isAuthenticated } = useAuth();
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -17,6 +19,13 @@ const IntegratedLoginScreen: React.FC<IntegratedLoginScreenProps> = () => {
 
   // Scroll to top when component mounts
   useScrollToTop();
+
+  // Redirect if already authenticated
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
 
   // Demo credentials - in a real app, this would be handled by a backend API
   const validCredentials = [
@@ -52,10 +61,8 @@ const IntegratedLoginScreen: React.FC<IntegratedLoginScreenProps> = () => {
       if (isValidUser) {
         setSuccess('Login successful! Redirecting to dashboard...');
         
-        // Store user session (in a real app, use proper session management)
-        localStorage.setItem('isAuthenticated', 'true');
-        localStorage.setItem('userId', userId);
-        localStorage.setItem('loginTime', new Date().toISOString());
+        // Use AuthContext login method for proper session management
+        login(userId);
         
         if (rememberMe) {
           localStorage.setItem('rememberMe', 'true');
