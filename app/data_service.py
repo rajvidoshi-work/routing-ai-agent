@@ -6,8 +6,9 @@ from app.models import ComprehensivePatientData
 
 class DataService:
     def __init__(self):
-        # Default data directory - can be configured
-        self.data_directory = "/Users/rajvi/patient_data"  # Change this to your preferred location
+        # Use relative path within the project directory
+        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        self.data_directory = os.path.join(project_root, "patient_data")
         self.patient_cache: Dict[str, ComprehensivePatientData] = {}
         
         # Ensure data directory exists

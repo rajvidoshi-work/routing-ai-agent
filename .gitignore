@@ -142,14 +142,15 @@ Desktop.ini
 *.sqlite
 *.sqlite3
 
-# Patient data (sensitive)
-/patient_data/*.xlsx
-/patient_data/*.csv
-/patient_data/*.json
+# Patient data (sensitive) - within project directory
+patient_data/*.xlsx
+patient_data/*.csv
+patient_data/*.json
+patient_data/.DS_Store
 
 # Keep sample files but ignore actual patient data
-!sample_*.xlsx
-!sample_*.csv
+!patient_data/sample_*.xlsx
+!patient_data/sample_*.csv
 
 # Test files
 .pytest_cache/

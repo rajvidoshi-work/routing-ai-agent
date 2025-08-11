@@ -217,8 +217,9 @@ routing-ai-agent/
 │   └── tsconfig.json            # TypeScript configuration
 │
 ├── 📊 Data & Documentation
-│   ├── sample_excel_files/      # Sample patient data
-│   ├── patient_data/            # Runtime patient data storage
+│   ├── sample_excel_files/      # Sample patient data templates
+│   ├── patient_data/            # Runtime patient data storage (within project)
+│   │   └── sample 2.xlsx        # Sample patient data file
 │   ├── docs/                    # Additional documentation
 │   ├── DEMO_SCRIPT.md           # 2-minute demo guide
 │   └── AWS_DEPLOYMENT.md        # AWS deployment guide
@@ -307,13 +308,13 @@ DEBUG=true                                  # Enable debug logging
 ENVIRONMENT=development                     # Environment setting
 
 # Data Configuration
-PATIENT_DATA_DIR=/Users/rajvi/patient_data  # Patient data directory
+PATIENT_DATA_DIR=./patient_data              # Patient data directory (relative to project)
 LOG_LEVEL=INFO                              # Logging level
 ```
 
 ### Patient Data Directory
 
-- **Default Location**: `/Users/rajvi/patient_data/`
+- **Default Location**: `./patient_data/` (within project directory)
 - **Supported Formats**: Excel (.xlsx), CSV (.csv)
 - **Auto-loading**: Sample data loads automatically on startup
 - **Custom Upload**: Use Data Management page for custom patient data
@@ -403,7 +404,7 @@ curl -H "Authorization: Bearer YOUR_API_KEY" \
 **❌ No patient data:**
 ```bash
 # Check data directory
-ls -la /Users/rajvi/patient_data/
+ls -la ./patient_data/
 
 # Reload sample data
 curl -X GET http://localhost:8000/api/data-status
