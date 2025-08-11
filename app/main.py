@@ -54,9 +54,6 @@ async def root():
             "docs": "/docs",
             "data_status": "/api/data-status",
             "patients": "/api/patients",
-            "process_complete_case": "/api/process-complete-case"
-        }
-    }
             "available_files": "/api/available-files",
             "process_complete_case": "/api/process-complete-case"
         },
