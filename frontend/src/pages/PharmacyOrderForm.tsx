@@ -944,7 +944,7 @@ const PharmacyOrderForm: React.FC<PharmacyOrderFormProps> = () => {
                       alert('Print/Export functionality - Coming Soon!\n\nThis will allow you to print or export the pharmacy order form.');
                     }}
                     style={{
-                      backgroundColor: '#dc2626',
+                      backgroundColor: '#0ea5e9',
                       color: 'white',
                       padding: '16px 32px',
                       border: 'none',
@@ -955,7 +955,7 @@ const PharmacyOrderForm: React.FC<PharmacyOrderFormProps> = () => {
                       display: 'flex',
                       alignItems: 'center',
                       gap: '8px',
-                      boxShadow: '0 8px 32px rgba(220, 38, 38, 0.3)',
+                      boxShadow: '0 8px 32px rgba(14, 165, 233, 0.3)',
                       transition: 'all 0.3s ease'
                     }}
                   >
